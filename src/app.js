@@ -12,6 +12,8 @@ import sessionRouter from "./Routes/session.routes.js";
 import cookieParser from "cookie-parser";
 import session from 'express-session';
 import MongoStore from "connect-mongo";
+import './passport.js';
+import passport from "passport";
 // coneccion a db
 import "./dao/db/configDB.js"
 import { messageManager } from "./dao/db/manager/message.manager.js";
@@ -38,6 +40,9 @@ app.use(
   })
 );
 
+//passport 
+app.use(passport.initialize());
+app.use(passport.session())
 
 //handlebars
 const hbs = exphbs.create({
@@ -78,8 +83,10 @@ socketServer.on('connection', async (socket) => {
 socket.on('addProduct', async (product) => {
   try {
     const createdProduct = await productManager.createOne(product);
-    const productosActualizados = await productManager.findAll(); 
-    socketServer.emit('actualizarProductos', productosActualizados);
+    const productosActualizados = await productManager.findAll({limit:100}); 
+    const productObject= productosActualizados.result.map(doc => doc.toObject())
+    socketServer.emit('actualizarProductos', productObject);
+    
   } catch (error) {
     console.error('Error al agregar el producto:', error.message);
   }
@@ -91,8 +98,9 @@ socket.on('addProduct', async (product) => {
       const result = await productManager.deleteOne({ _id: id });
   
       if (result.deletedCount > 0) {
-        const productosActualizados = await productManager.findAll();
-        socketServer.emit('actualizarProductos', productosActualizados);
+        const productosActualizados = await productManager.findAll({limit:100});
+        const productObject= productosActualizados.result.map(doc => doc.toObject())
+        socketServer.emit('actualizarProductos', productObject);
       } else {
         console.error('El producto no se encontró para eliminar.');
       }

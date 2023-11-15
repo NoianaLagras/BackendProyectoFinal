@@ -9,9 +9,17 @@
   <header class="productsHeader">
     <h1 class="tituloItem">E-commerce</h1>
     <div>
-    <button class="btn btn-success">👤 {{ user.Usuario }} </button>
+    <button class="btn btn-success">
+  👤
+  {{#if user.isAdmin}}
+  {{user.Usuario}} (Administrador)
+{{else}}
+  {{user.Usuario}} (Usuario)
+{{/if}}
+
+</button>
     <button class="btn btn-danger">
-        <a href="/api/sessions/singout" class="singout">Sing Out
+        <a href="/api/sessions/signout" class="signout">Sign Out
         </a>
       </button>
       </div>
@@ -72,7 +80,6 @@
   
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/filter.js"></script>
-<script src="/js/swal.js"></script>
 
 </body>
 </html>

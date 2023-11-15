@@ -13,7 +13,14 @@ Usuario:{
 password:{
     type:String,
     require:true
-}
+},
+isGithub:{
+    type: Boolean,
+    default:false,
+},
+isAdmin:
+ { type: Boolean,
+  default: false }
 })
 
 export const UserModel = model('Users', UserSchema )

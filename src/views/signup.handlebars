@@ -2,7 +2,7 @@
     <div class="overlay">
 <div class="sesionesChild">
 <h1>Registrarse</h1>
-<form action="/api/sessions/singup" method="post" class="sessionForm">
+<form action="/api/sessions/signup" method="post" class="sessionForm">
 <p>Nombre De Usuario :</p>
 <input type="text" name="Usuario" id="Usuario" placeholder="Nombre de Usuario" required>
 
@@ -14,9 +14,15 @@
 
 
 
-<input type="submit" value="Sing Up" class="sessionButton">
+<input type="submit" value="Sign Up" class="sessionButton">
 </form>
 
 <a href="/login" class="cuentas">¿Ya tienes cuenta?</a>
+<p class="inicioPorTerceros">Registro por terceros:</p>
+<a href='/api/sessions/auth/github'class="githubButton">
+<img src="https://marketing4ecommerce.net/wp-content/uploads/2018/06/GitHub-logo-2-imagen.jpg" alt="Logo de GitHub" /></a>
+
+
 </div>
+
 </div></div>
