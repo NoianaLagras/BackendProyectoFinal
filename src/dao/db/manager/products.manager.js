@@ -1,10 +1,17 @@
+
+import BasicManager from "./basic.manager.js";
 import { productsModel } from "../models/Product.model.js";
-class ProductManager {
+
+ class ProductManager extends BasicManager {
+  constructor() {
+    super(productsModel, ''); 
+}
    /* async findAll(){
     const result = await productsModel.find().lean();
     return result
     }*/
-    async findAll(obj) {
+    //Aca no usar el find de basic
+    async findAllCustom(obj) {
         try {
 
             const { limit = 10, page = 1, sort = '', query = '', availability = '' } = obj;
@@ -58,29 +65,12 @@ class ProductManager {
         throw error;
     }
     }
-    
-    
-    async findById(id){
-        const result = await productsModel.findById(id)
-        return result
 
-    }
-    async createOne(obj){
-        const result = await productsModel.create(obj)
-        return result
-    }
     async updatedOne(id, obj) {
         const result = await productsModel.updateOne({ _id: id }, obj);
         return result; 
     }
-    async deleteOne(id) {
-        try {
-          const result = await productsModel.deleteOne({ _id: id });
-          return result;
-        } catch (error) {
-          throw error;
-        }
-    }
+    
 }
 
 export const productManager = new ProductManager();

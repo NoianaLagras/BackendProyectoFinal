@@ -1,62 +1,64 @@
+import BasicManager from "./basic.manager.js";
 import { CartModel } from "../models/Cart.model.js";
 
-class CartsManager {
-async createCart(){
-    const newCart = { products: [] };
-    const response = await CartModel.create(newCart)
-    return response
-
-}
-async findAll(){
-    const response  =await CartModel.find().lean();
-    return response 
-}
-async findCartById(idCart) {
-  const cart = await CartModel
-      .findById(idCart)
-      .populate('products.product');
-
-  if (!cart) {
-      return null;
+class CartsManager extends BasicManager {
+  constructor() {
+    super(CartModel, 'products.product');
   }
-      const total = cart.products.reduce((acc, item) => {
-      return acc + (item.product.price * item.quantity);
-  }, 0);
+  async createCart() {
+    const newCart = { products: [] };
+    const response = await this.createOne(newCart);
+    return response;
+  }
 
-  return { cart, total };
-}
-
-async addProductToCarts (idCart, idProduct){
-    const cart = await CartModel.findById(idCart)
-    const productIndex = cart.products.findIndex(p=> p.product.toString() === idProduct)
-    if (productIndex ===-1){
-        cart.products.push({product: idProduct, quantity : 1})
-    }else {
-        cart.products[productIndex].quantity++;
-    }
-    return cart.save();
-}
-async removeProductFromCart(idCart, idProduct) {
-    const cart = await CartModel.findById(idCart);
-
+  async findCartById(idCart) {
+    const cart = await this.findById(idCart);
     if (!cart) {
-        return null; 
+      return null;
     }
+    const cartLenght = cart.products.length;
+    const total = cart.products.reduce((acc, item) => {
+      return acc + item.product.price * item.quantity;
+    }, 0);
+    return { cart, total ,cartLenght};
+  }
 
-    const productIndex = cart.products.findIndex(p => p.product.toString() === idProduct);
-   //const productIndex = cart.products.findIndex(p => p.product.equals(idProduct));
+  async addProductToCart(idCart, idProduct, quantity) {
+    const cart = await CartModel.findById(idCart);
+    const productIndex = cart.products.findIndex(
+        (p) => p.product.toString() === idProduct
+    );
 
     if (productIndex === -1) {
-        return null; 
-     } else {
-           cart.products.splice(productIndex, 1);
-        await cart.save();
-        return cart;
+        cart.products.push({ product: idProduct, quantity: quantity });
+    } else {
+        cart.products[productIndex].quantity += quantity;
     }
+
+    return cart.save();
 }
-async updateCart(cartId, updatedProducts) {
+
+
+  async removeProductFromCart(idCart, idProduct) {
+    const cart = await this.findById(idCart);
+    if (!cart) {
+      return null;
+    }
+    const productIndex = cart.products.findIndex(
+      (p) => p.product.toString() === idProduct
+    );
+    if (productIndex === -1) {
+      return null;
+    } else {
+      cart.products.splice(productIndex, 1);
+      await cart.save();
+      return cart;
+    }
+  }
+
+  async updateCart(cartId, updatedProducts) {
     try {
-      const cart = await CartModel.findById(cartId);
+      const cart = await this.findById(cartId);
       if (!cart) {
         return null;
       }
@@ -70,11 +72,13 @@ async updateCart(cartId, updatedProducts) {
 
   async updateProductQuantity(cartId, productId, quantity) {
     try {
-      const cart = await CartModel.findById(cartId);
+      const cart = await this.findById(cartId);
       if (!cart) {
         return null;
       }
-      const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+      const productIndex = cart.products.findIndex(
+        (p) => p.product.toString() === productId
+      );
       if (productIndex === -1) {
         return null;
       }
@@ -88,7 +92,7 @@ async updateCart(cartId, updatedProducts) {
 
   async deleteAllProducts(cartId) {
     try {
-      const cart = await CartModel.findById(cartId);
+      const cart = await this.findById(cartId);
       if (!cart) {
         return null;
       }
@@ -99,5 +103,6 @@ async updateCart(cartId, updatedProducts) {
       throw error;
     }
   }
-} 
+}
+
 export const cartsManager = new CartsManager();

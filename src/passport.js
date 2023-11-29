@@ -1,30 +1,37 @@
 import passport from 'passport';
 import { usersManager } from './dao/db/manager/users.manager.js';
+import { cartsManager } from './dao/db/manager/carts.manager.js';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { hashData , compareData } from './utils.js';
+
 
 passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' },
     async (req, email, password, done) => {
         const { Usuario } = req.body;
-        if (!Usuario || !password || !email) {
+        if (!Usuario || !password || !email ) {
             return done(null, false);
         }
         try {
             const hashedPassword = await hashData(password);
+        
+            const newCart = await cartsManager.createCart();
 
             if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-                const createdAdminUser = await usersManager.createOne({
+                const createdAdmin = await usersManager.createOne({
                     ...req.body,
                     password: hashedPassword,
-                    isAdmin: true,
+                    role: 'Admin',
+                    cartId: newCart._id
                 });
-                return done(null, createdAdminUser);
+                return done(null, createdAdmin);
             }
 
             const createdUser = await usersManager.createOne({
                 ...req.body,
                 password: hashedPassword,
+                cartId: newCart._id
             });
 
             return done(null, createdUser);
@@ -33,6 +40,10 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameFiel
         }
     }));
 
+
+
+
+//Login  
 
 passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
 
@@ -54,8 +65,6 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email
         done(error);
     }
 }));
-
-
 //Github 
 passport.use('github', new GithubStrategy({
     clientID: 'Iv1.e5d05b1cc0a160a6',
@@ -63,8 +72,11 @@ passport.use('github', new GithubStrategy({
     callbackURL: "http://localhost:8080/api/sessions/callback",
 },async(accessToken,refreshToken,profile,done)=>{
     try {
-        const userDB = await usersManager.findByEmail(profile._json.email);
-    //login
+        const userDB = await usersManager.findByEmail(profile._json.email) 
+
+        const newCart = await cartsManager.createCart();
+
+        //login
         if (userDB){
         if(userDB.isGithub){
         return done (null, userDB)
@@ -78,6 +90,7 @@ passport.use('github', new GithubStrategy({
         email: profile._json.email ,
         password: ' ',
         isGithub:true,
+        cartId: newCart._id
     }
     const createUser = await usersManager.createOne(infoUser)
     return done ( null, createUser)
@@ -86,6 +99,16 @@ passport.use('github', new GithubStrategy({
     }
 }))
 
+//JWT 
+const fromCookies =(req)=>{return req.cookies.token}
+
+passport.use('jwt', new JwtStrategy 
+({jwtFromRequest: ExtractJwt.fromExtractors([fromCookies])
+//({jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+    ,secretOrKey:'secretJWT'},async function(jwt_payload,done) {
+    done(null, jwt_payload)
+})
+)
 
 passport.serializeUser((user,done) =>{
     done(null,user._id)

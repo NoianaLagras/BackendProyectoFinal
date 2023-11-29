@@ -1,6 +1,10 @@
+import BasicManager from "./basic.manager.js";
 import { MessageModel } from "../models/Message.model.js";
 
-class MessageManager {
+class MessageManager extends BasicManager {
+  constructor() {
+    super(MessageModel, '');
+  }
   async createOne(email, message) {
     try {
       const savedMessage = await MessageModel.create({ email, message });
@@ -10,32 +14,9 @@ class MessageManager {
     }
   }
 
-  async findAll() {
-    try {
-      const response = await MessageModel.find().lean();
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
+ //findAll y findById y delete heredados de basic 
 
-  async findById(id) {
-    try {
-      const response = await MessageModel.findById(id);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
 
-  async deleteOne(id) {
-    try {
-      const response = await MessageModel.deleteOne({ _id: id });
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
 }
 
 export const messageManager = new MessageManager();

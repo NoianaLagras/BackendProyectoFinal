@@ -16,10 +16,10 @@
             <h1 class='nombreProducto'>{{product.title}}</h1>
             <h4 class='precioDetail'>$ {{product.price}}.00 ARS</h4>
             <div class='stock'>
-                <input type="number" class="cantidadDetail" min="1" max="{{product.stock}}">
+                <input type="number" class="cantidadDetail" id="productQuantity_{{product._id}}" min="1" max="{{product.stock}}">
             </div>
             <p class='stockNum'>Stock: {{product.stock}}</p>
-            <button class='botonDetail' id="addProductToCart" data-product="{{product._id}}">Agregar al Carrito</button>
+            <button class='botonDetail' id="addProductToCart" data-product="{{product._id}}"  data-cart="{{ cartId }}">Agregar al Carrito</button>
             <a href="/api/products" class="botonDetail">⬅️ Volver a productos</a>
         </div>
         <div class='descripcion'>

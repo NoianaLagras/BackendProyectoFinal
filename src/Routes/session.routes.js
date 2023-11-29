@@ -1,39 +1,56 @@
 import {Router} from "express";
 import { usersManager } from '../dao/db/manager/users.manager.js'
-import { hashData } from '../utils.js'
+import { generateToken, hashData,compareData} from '../utils.js'
 import passport from "passport";
+
 const sessionRouter = Router();
 
 //LOCAL SIGNUP - LOGIN
+//Usando passport 
+sessionRouter.post('/signup', (req, res, next) => {
+    passport.authenticate('signup', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/error');
+        }
 
-sessionRouter.post('/signup', passport.authenticate('signup', {
-    successRedirect: '/login',
-    failureRedirect: '/error'
-  }));
+        res.redirect('/login')})
+        (req, res, next);
+});
 
-  sessionRouter.post('/login', passport.authenticate('login', {
-    successRedirect: '/api/products',
-    failureRedirect: '/error'
-  }));
-
+sessionRouter.post('/login', passport.authenticate('login', {}), (req, res) => {
+    const { Usuario, email, role, cartId } = req.user;
+    const token = generateToken({ Usuario, email, role, cartId });
+    res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+    res.redirect('/api/products');
+});
 //GITHUB - LOGIN
 
 sessionRouter.get('/auth/github', passport.authenticate('github', {
-    scope: ['user:email', 'read:user']
+    scope: ['user:email', 'read:user'],session: false 
 }));
+
 sessionRouter.get('/callback',passport.authenticate('github'),(req,res)=>{
-    console.log('Información del usuario después de autenticar con GitHub:', req.user);
+    const { Usuario, email, role } = req.user;
+    const token = generateToken({ Usuario, email, role });
+    res.cookie('token', token, { maxAge: 60000, httpOnly: true });
     res.redirect('/api/products');
 })
 
+// Current 
+sessionRouter.get('/current' ,passport.authenticate('jwt', { session: false }), (req, res) => {
+res.json({ user: req.user });
+  });
+    
 
 
-
-sessionRouter.get('/signout' , (req,res) =>{
-req.session.destroy(()=>{
-    res.redirect('/login')
-})
-})
+// sessionRouter
+sessionRouter.get('/signout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/login');
+});
 
 
 
@@ -60,8 +77,8 @@ export default sessionRouter
 
 
 
-// sin passport
-/*sessionRouter.post('/login', async (req, res) => {
+// sin passport y con token de jwt
+/* sessionRouter.post('/login', async (req, res) => {
     const {  email , password} = req.body
     if (!email || !password){
         res.status(400).json({message : 'All fields are required'});
@@ -75,18 +92,25 @@ export default sessionRouter
         if (!isPasswordValid){
             return res.status(401).json({ message :'Contraseña incorrecta'})
         }
-        const sessionInfo = (email === 'adminCoder@coder.com' && password 
+        //Con sesiones 
+        /* const sessionInfo = (email === 'adminCoder@coder.com' && password 
         === 'adminCod3r123') ? { email , Usuario : user.Usuario , isAdmin:true} : { email , Usuario : user.Usuario , isAdmin:false}
-        req.session.user = sessionInfo;
-        return res.redirect ('/api/products')
-    } catch (error){
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
-    }
+        req.session.user = sessionInfo; */
+        //return res.redirect ('/api/products')
+        //con jwt : 
+       // onst { Usuario , role } = user
+        //const token  = generateToken({ Usuario  , email ,role} )
+        //res.json({message: "Token :", token})c
+        // cambiar api/products a que si hay un token en cookies se pueda entrar
+      //  res.status(200).cookie('token:', token, {httpOnly:true}).json({message: 'Bienvenido',token})
+    //} catch (error){
+     //   res.status(500).json({ message: "Internal Server Error", error: error.message });
+    //}
 
-   })*/
+   //}) */
    
-/*sessionRouter.post('/signup', async (req, res) => {
-    const { Usuario , password , email} = req.body
+/* sessionRouter.post('/signup', async (req, res) => {
+    const { Usuario , password , email } = req.body
     if (!Usuario || !password || !email){
         res.status(400).json({message : 'All fields are requires'});
     }
@@ -99,4 +123,4 @@ export default sessionRouter
     } catch (error) {
         res.status(500).json({ error });
     }
-});*/
+}); */

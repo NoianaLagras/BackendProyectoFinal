@@ -1,17 +1,19 @@
-import { UserModel } from "../models/Users.model.js";
+import BasicManager from './basic.manager.js';
+import { UserModel } from '../models/Users.model.js';
 
-class UsersManager {
-    async findById(id){
-        const response = await  UserModel.findById(id);
-        return response;
+ class UsersManager extends BasicManager {
+    constructor() {
+        super(UserModel, ''); 
     }
-    async findByEmail(email){
-        const response = await  UserModel.findOne({email});
-        return response;
+    //findById y createOne heredados
+    async findByEmail(email) {
+        try {
+            const response = await this.model.findOne({ email }).lean().populate(this.populateProps);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
-    async createOne(obj){
-        const response = await  UserModel.create(obj);
-        return response;
-    }
+
 }
-export const usersManager = new UsersManager();
+export const usersManager = new UsersManager()

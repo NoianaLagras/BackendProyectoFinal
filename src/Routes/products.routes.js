@@ -7,7 +7,7 @@ const productsRouter = Router();
 //     ------ Obtener Productos -------
 productsRouter.get('/', async (req, res) => {
     try {
-        const products = await productManager.findAll(req.query);
+        const products = await productManager.findAllCustom(req.query);
         res.status(200).json({
             status: 'success',
             payload: products.result,
