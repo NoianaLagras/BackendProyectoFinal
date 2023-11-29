@@ -61,7 +61,7 @@ import { productsModel } from "../models/Product.model.js";
             }
         return { info, result:result.docs };
     } catch (error) {
-        console.error(error);
+
         throw error;
     }
     }

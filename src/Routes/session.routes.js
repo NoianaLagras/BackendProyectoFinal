@@ -32,12 +32,18 @@ sessionRouter.get('/auth/github', passport.authenticate('github', {
     scope: ['user:email', 'read:user'],session: false 
 }));
 
-sessionRouter.get('/callback',passport.authenticate('github'),(req,res)=>{
-    const { Usuario, email, role } = req.user;
-    const token = generateToken({ Usuario, email, role });
-    res.cookie('token', token, { maxAge: 60000, httpOnly: true });
-    res.redirect('/api/products');
-})
+sessionRouter.get('/callback', passport.authenticate('github', { session: false }), (req, res) => {
+    try {
+        const { Usuario, email, role } = req.user;
+        const token = generateToken({ Usuario, email, role });
+        res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+       res.redirect('/api/products');
+    } catch (error) {
+        console.error("Error en la ruta de callback:", error);
+        res.redirect('/error'); 
+    }
+});
+
 
 // Current 
 sessionRouter.get('/current' ,passport.authenticate('jwt', { session: false }), (req, res) => {

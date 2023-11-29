@@ -72,6 +72,7 @@ passport.use('github', new GithubStrategy({
     callbackURL: "http://localhost:8080/api/sessions/callback",
 },async(accessToken,refreshToken,profile,done)=>{
     try {
+
         const userDB = await usersManager.findByEmail(profile._json.email) 
 
         const newCart = await cartsManager.createCart();
@@ -81,6 +82,7 @@ passport.use('github', new GithubStrategy({
         if(userDB.isGithub){
         return done (null, userDB)
         }else{
+            done(error);
             return done(null,false)
         }
     }
@@ -93,6 +95,7 @@ passport.use('github', new GithubStrategy({
         cartId: newCart._id
     }
     const createUser = await usersManager.createOne(infoUser)
+    
     return done ( null, createUser)
     } catch (error) {
         done(error)

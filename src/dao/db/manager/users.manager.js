@@ -6,11 +6,12 @@ import { UserModel } from '../models/Users.model.js';
         super(UserModel, ''); 
     }
     //findById y createOne heredados
-    async findByEmail(email) {
-        try {
-            const response = await this.model.findOne({ email }).lean().populate(this.populateProps);
-            return response;
-        } catch (error) {
+    async findByEmail(email){
+        try{
+        const response = await  UserModel.findOne({email});
+        return response;
+    } catch (error) {
+            console.error("Error en findByEmail:", error);
             throw error;
         }
     }

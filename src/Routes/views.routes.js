@@ -72,7 +72,8 @@ viewsRouter.get('/api/products',jwtValidator, async (req, res) => {
     },
     });
   } catch (error) {
-    res.redirect('/error')
+    throw error
+    //res.redirect('/error')
   }
 });
 
