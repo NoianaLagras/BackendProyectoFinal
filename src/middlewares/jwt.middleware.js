@@ -29,7 +29,7 @@ export const jwtValidator = (req, res, next) => {
         req.authenticated = true;
         next();
     } catch (error) {
-        //req.user = null;
+        req.user = null;
         req.authenticated = false;
         res.json({ error: error.message });
     }

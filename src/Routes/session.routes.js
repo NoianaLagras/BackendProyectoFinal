@@ -34,12 +34,11 @@ sessionRouter.get('/auth/github', passport.authenticate('github', {
 
 sessionRouter.get('/callback', passport.authenticate('github', { session: false }), (req, res) => {
     try {
-        const { Usuario, email, role } = req.user;
-        const token = generateToken({ Usuario, email, role });
+        const { Usuario, email, role ,cartId } = req.user;
+        const token = generateToken({ Usuario, email, role,cartId });
         res.cookie('token', token, { maxAge: 60000, httpOnly: true });
        res.redirect('/api/products');
     } catch (error) {
-        console.error("Error en la ruta de callback:", error);
         res.redirect('/error'); 
     }
 });

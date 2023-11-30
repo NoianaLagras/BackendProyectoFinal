@@ -14,7 +14,7 @@ class CartsManager extends BasicManager {
   async findCartById(idCart) {
     const cart = await this.findById(idCart);
     if (!cart) {
-      return { cartLenght: 0 }; 
+      return null;
     }
     const cartLenght = cart.products.length;
     const total = cart.products.reduce((acc, item) => {
