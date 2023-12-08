@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
-const SECRET_KET_JWT = 'secretJWT'
+import config from '../config.js'
+const SECRET_JWT_KEY = config.secret_jwt
 
 
 /* export const jwtValidator = (req, res, next) => {
@@ -7,7 +8,7 @@ const SECRET_KET_JWT = 'secretJWT'
         const authHeader = req.get('Authorization');
         const token = authHeader.split(' ')[1];
         
-        const userToken = jwt.verify(token, SECRET_KET_JWT);
+        const userToken = jwt.verify(token, SECRET_JWT_KEY);
         req.user = userToken;
         next();
     } catch (error) {
@@ -24,7 +25,7 @@ export const jwtValidator = (req, res, next) => {
             req.authenticated = false;
             return next();
         }
-        const userToken = jwt.verify(token, SECRET_KET_JWT);
+        const userToken = jwt.verify(token, SECRET_JWT_KEY);
         req.user = userToken;
         req.authenticated = true;
         next();

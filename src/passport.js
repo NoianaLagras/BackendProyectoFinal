@@ -5,6 +5,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { hashData , compareData } from './utils.js';
+import config from './config.js';
 
 
 passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' },
@@ -67,8 +68,8 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email
 }));
 //Github 
 passport.use('github', new GithubStrategy({
-    clientID: 'Iv1.e5d05b1cc0a160a6',
-    clientSecret: '07f5cdecdae4e2deaa4e34e24c57d191bb974ca9',
+    clientID: config.git_client_id,
+    clientSecret: config.git_client_secret,
     callbackURL: "http://localhost:8080/api/sessions/callback",
 },async(accessToken,refreshToken,profile,done)=>{
     try {
@@ -108,7 +109,7 @@ const fromCookies =(req)=>{return req.cookies.token}
 passport.use('jwt', new JwtStrategy 
 ({jwtFromRequest: ExtractJwt.fromExtractors([fromCookies])
 //({jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
-    ,secretOrKey:'secretJWT'},async function(jwt_payload,done) {
+    ,secretOrKey:config.secret_jwt},async function(jwt_payload,done) {
     done(null, jwt_payload)
 })
 )

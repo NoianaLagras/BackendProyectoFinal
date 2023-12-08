@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
+import config from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +14,7 @@ export const hashData =  async (data) => {
 export const compareData = async (data , hashedData)=>{
     return bcrypt.compare(data,hashedData)
 }
-const SECRET_KET_JWT = 'secretJWT'
+const SECRET_KET_JWT = config.secret_jwt
 export const generateToken = (user)=>{
     const token = jwt.sign(user,SECRET_KET_JWT,{ expiresIn:300 });
     return token ;

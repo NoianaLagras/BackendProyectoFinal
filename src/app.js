@@ -19,7 +19,8 @@ import passport from "passport";
 import "./dao/db/configDB.js"
 import { messageManager } from "./dao/db/manager/message.manager.js";
 import { productManager } from "./dao/db/manager/products.manager.js";
-
+ 
+import config from './config.js'
 
 const app = express();
 const PORT = 8080 ;
@@ -33,13 +34,13 @@ app.use(flash());
 
 
 //mongo 
-const URI ="mongodb+srv://noiLagras:sUajV3for8LoqE2c@cluster0.atnqnrl.mongodb.net/ecommerce?retryWrites=true&w=majority"
+const URI = config.mongo_uri
 app.use(
   session({
     store: new MongoStore({
       mongoUrl: URI,
     }),
-    secret: "secretSession",
+    secret: config.secret_session,
     cookie: { maxAge: 60000 },
   })
 );
