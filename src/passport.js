@@ -19,7 +19,7 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameFiel
         
             const newCart = await cartsManager.createCart();
 
-            if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+            if (email === config.admin_email && password === config.admin_password) {
                 const createdAdmin = await usersManager.createOne({
                     ...req.body,
                     password: hashedPassword,

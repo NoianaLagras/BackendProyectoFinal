@@ -7,5 +7,7 @@ export default {
     git_client_id : process.env.GITHUB_CLIENT_ID,
     git_client_secret  : process.env.GITHUB_CLIENT_SECRET,
     secret_session  : process.env.SECRET_SESSION,
+    admin_email: process.env.ADMIN_EMAIL,
+    admin_password: process.env.ADMIN_PASSWORD
 
 }
