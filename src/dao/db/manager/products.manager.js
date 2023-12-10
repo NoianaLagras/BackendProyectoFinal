@@ -6,11 +6,7 @@ import { productsModel } from "../models/Product.model.js";
   constructor() {
     super(productsModel, ''); 
 }
-   /* async findAll(){
-    const result = await productsModel.find().lean();
-    return result
-    }*/
-    //Aca no usar el find de basic
+
     async findAllCustom(obj) {
         try {
 
@@ -74,3 +70,10 @@ import { productsModel } from "../models/Product.model.js";
 }
 
 export const productManager = new ProductManager();
+
+
+   /* async findAll(){
+    const result = await productsModel.find().lean();
+    return result
+    }*/
+    //Aca no usar el find de basic

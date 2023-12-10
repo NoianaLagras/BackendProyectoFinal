@@ -17,9 +17,8 @@ import './passport.js';
 import passport from "passport";
 // coneccion a db
 import "./dao/db/configDB.js"
-import { messageManager } from "./dao/db/manager/message.manager.js";
-import { productManager } from "./dao/db/manager/products.manager.js";
- 
+//socket
+import { socketManager } from "./dao/db/manager/socket.manager.js";
 import config from './config.js'
 
 const app = express();
@@ -85,51 +84,7 @@ app.on('error', (error) => {
 });
 
 const socketServer = new Server(httpServer);
-socketServer.on('connection', async (socket) => {
-  console.log(`Cliente Conectado: ${socket.id}`);
-
-  socket.on("disconnect", () => {
-      console.log(`Cliente Desconectado: ${socket.id}`);
-  });
-// agregar product en mongo
-socket.on('addProduct', async (product) => {
-  try {
-    const createdProduct = await productManager.createOne(product);
-    const productosActualizados = await productManager.findAllCustom({limit:100}); 
-    const productObject= productosActualizados.result.map(doc => doc.toObject())
-    socketServer.emit('actualizarProductos', productObject);
-    
-  } catch (error) {
-    console.error('Error al agregar el producto:', error.message);
-  }
-});
-
-  socket.on('deleteProduct', async (id) => {
-    try {
-
-      const result = await productManager.deleteOne({ _id: id });
-  
-      if (result.deletedCount > 0) {
-        const productosActualizados = await productManager.findAllCustom({limit:100});
-        const productObject= productosActualizados.result.map(doc => doc.toObject())
-        socketServer.emit('actualizarProductos', productObject);
-      } else {
-        console.error('El producto no se encontró para eliminar.');
-      }
-    } catch (error) {
-      console.error('Error al eliminar el producto:', error.message);
-    }
-  });
-// mensajes
-
-  socket.on('addMessage', async (data) => {
-    try {
-      const { email, message } = data;
-       const savedMessage = await messageManager.createOne(email, message);
-     const messages = await messageManager.findAll();
-       socketServer.emit('actualizarMensajes', messages);
-    } catch (error) {
-      console.error('Error al agregar el mensaje:', error.message);
-    }
-  });
+socketServer.on('connection', (socket) => {
+  const manager = socketManager(socketServer);
+  manager.handleConnection(socket);
 });

@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { productManager }  from "../dao/db/manager/products.manager.js";
-import { messageManager } from "../dao/db/manager/message.manager.js";
 import __dirname from '../utils.js';
-import { cartsManager } from "../dao/db/manager/carts.manager.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { jwtValidator } from "../middlewares/jwt.middleware.js";
+
+import { productManager }  from "../dao/db/manager/products.manager.js";
+import { messageManager } from "../dao/db/manager/message.manager.js";
+import { cartsManager } from "../dao/db/manager/carts.manager.js";
 
 
 const viewsRouter = Router();
@@ -54,7 +55,7 @@ viewsRouter.get('/chat', async (req, res) => {
     res.status(500).json({ error: 'Error al cargar la vista de chat.' });
   }
 });
-
+// cambiar cuando pase a service, controller etc
 viewsRouter.get('/api/products',jwtValidator, async (req, res) => {
   try {
     const { info, result } = await productManager.findAllCustom(req.query);
@@ -105,9 +106,6 @@ viewsRouter.get('/api/cart/:cid', async (req, res) => {
     res.status(500).send('Error al renderizar la página de carrito');
   }
 });
-
-
-//Session en passport ?
 
 // viewsRouter
 viewsRouter.get('/signup', async (req, res) => {
