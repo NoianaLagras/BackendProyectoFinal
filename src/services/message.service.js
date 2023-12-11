@@ -29,7 +29,7 @@ class MessageService {
       try {
         const result = await messageManager.deleteOne(id);
         if (result.deletedCount > 0) {
-          return true; // Eliminado correctamente
+          return true; 
         } else {
           throw new Error('Mensaje no encontrado para eliminar');
         }

@@ -55,7 +55,7 @@ viewsRouter.get('/chat', async (req, res) => {
     res.status(500).json({ error: 'Error al cargar la vista de chat.' });
   }
 });
-// cambiar cuando pase a service, controller etc
+
 viewsRouter.get('/api/products',jwtValidator, async (req, res) => {
   try {
     const { info, result } = await productManager.findAllCustom(req.query);
