@@ -1,4 +1,4 @@
-import { productManager } from "../dao/db/manager/products.manager.js";
+import { productManager } from "../dao/Mongo/manager/products.dao.js";
 
 class ProductService {
   async getAllProducts(query) {

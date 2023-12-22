@@ -1,7 +1,8 @@
-export const authMiddleware = () => {
+export const authMiddleware = (authorizedRole) => {
     return (req, res, next) => {
-        if (!req.user || req.user.role !== 'Admin') {
-            return res.status(403).json("Not authorized");
+        if (!req.user || !authorizedRole.includes(req.user.role)) {
+            console.log('Not authorized')
+            return res.redirect('/error')
         }
         next();
     };

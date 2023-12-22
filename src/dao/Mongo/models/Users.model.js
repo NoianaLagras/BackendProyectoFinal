@@ -1,10 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema({
-    first_name: {
-        type: String
-    },
-    last_name: {
+    name:{
         type: String
     },
     email: {
@@ -35,7 +32,13 @@ const UserSchema = new Schema({
     cartId: {
         type: Schema.Types.ObjectId,
         ref: 'Carts'
-    }
+    },
+    orders:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: 'Orders'
+        }],
+        default:[]}
 });
 
 export const UserModel = model('Users', UserSchema);

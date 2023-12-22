@@ -1,4 +1,4 @@
-import BasicManager from "./basic.manager.js";
+import BasicManager from "./basic.dao.js";
 import { MessageModel } from "../models/Message.model.js";
 
 class MessageManager extends BasicManager {

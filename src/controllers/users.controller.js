@@ -2,6 +2,7 @@
 import passport from 'passport';
 import { usersService } from '../services/users.service.js';
 import { generateToken, hashData } from '../utils.js';
+import UserResDTO from '../DTOs/userResponse.dto.js'
 
 class UsersController {
   async signup(req, res, next) {
@@ -77,7 +78,13 @@ class UsersController {
   }
 
   async getCurrentUser(req, res) {
-    res.json({ user: req.user });
+    try {
+    const userResponseDTO = new UserResDTO(req.user);
+    const userEmail = req.user.email; 
+      res.json({ user: userResponseDTO, email: userEmail });
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
   }
 }
 

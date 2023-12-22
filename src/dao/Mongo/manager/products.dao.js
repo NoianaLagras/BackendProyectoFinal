@@ -1,5 +1,5 @@
 
-import BasicManager from "./basic.manager.js";
+import BasicManager from "./basic.dao.js";
 import { productsModel } from "../models/Product.model.js";
 
  class ProductManager extends BasicManager {

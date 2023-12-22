@@ -1,25 +1,29 @@
 import express  from "express";
 import __dirname from './utils.js';
+
 import exphbs from 'express-handlebars';
 import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access';
 import Handlebars from 'handlebars';
+
 import flash from "express-flash";
 import { Server } from "socket.io";
+
 import productsRouter from "./Routes/products.routes.js";
 import cartsRouter from "./Routes/cart.routes.js";
 import viewsRouter from "./Routes/views.routes.js";
 import messageRouter from "./Routes/message.routes.js";
 import sessionRouter from "./Routes/session.routes.js";
+
 import cookieParser from "cookie-parser";
 import session from 'express-session';
 import MongoStore from "connect-mongo";
 import './passport.js';
 import passport from "passport";
 // coneccion a db
-import "./dao/db/configDB.js"
+import "./dao/Mongo/configDB.js"
 //socket
-import { socketManager } from "./dao/db/manager/socket.manager.js";
-import config from './config.js'
+import { socketManager } from "./dao/socket.manager.js";
+import config from './config/config.js'
 
 const app = express();
 const PORT = 8080 ;

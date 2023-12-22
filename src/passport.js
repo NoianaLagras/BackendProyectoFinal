@@ -1,71 +1,72 @@
 import passport from 'passport';
-import { usersManager } from './dao/db/manager/users.manager.js';
-import { cartsManager } from './dao/db/manager/carts.manager.js';
+import { usersManager } from './dao/Mongo/manager/users.dao.js';
+import { cartsManager } from './dao/Mongo/manager/carts.dao.js';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { hashData , compareData } from './utils.js';
-import config from './config.js';
+import config from './config/config.js';
+import UserResDTO from './DTOs/userResponse.dto.js';
+import UserReqDTO from './DTOs/userRequest.dto.js';
 
-
+// signup
 passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' },
-    async (req, email, password, done) => {
-        const { Usuario } = req.body;
-        if (!Usuario || !password || !email ) {
-            return done(null, false);
-        }
-        try {
-            const hashedPassword = await hashData(password);
-        
-            const newCart = await cartsManager.createCart();
+  async (req, email, password, done) => {
+    const userReqDTO = new UserReqDTO(req.body);
 
-            if (email === config.admin_email && password === config.admin_password) {
-                const createdAdmin = await usersManager.createOne({
-                    ...req.body,
-                    password: hashedPassword,
-                    role: 'Admin',
-                    cartId: newCart._id
-                });
-                return done(null, createdAdmin);
-            }
-
-            const createdUser = await usersManager.createOne({
-                ...req.body,
-                password: hashedPassword,
-                cartId: newCart._id
-            });
-
-            return done(null, createdUser);
-        } catch (error) {
-            done(error);
-        }
-    }));
-
-
-
-
-//Login  
-
-passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
-
-    if (!email || !password) {
-        return done(null, false);
+    if (!userReqDTO.Usuario || !password || !email) {
+      return done(null, false);
     }
+
     try {
-        const user = await usersManager.findByEmail(email);
-        if (!user) {
-            return done(null, false);
-        }
-        const isPasswordValid = await compareData(password, user.password);
-        if (!isPasswordValid) {
-            return done(null, false);
-        }
-        
-        return done(null, user);
+      const hashedPassword = await hashData(password);
+      const newCart = await cartsManager.createCart();
+
+      if (email === config.admin_email && password === config.admin_password) {
+        const createdAdmin = await usersManager.createOne({
+          ...userReqDTO,
+          password: hashedPassword,
+          role: 'Admin',
+          cartId: newCart._id
+        });
+        return done(null, createdAdmin);
+      }
+
+      const createdUser = await usersManager.createOne({
+        ...userReqDTO,
+        password: hashedPassword,
+        cartId: newCart._id
+      });
+
+      return done(null, createdUser);
     } catch (error) {
-        done(error);
+      done(error);
     }
+  }
+));
+
+// login
+passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+  if (!email || !password) {
+    return done(null, false);
+  }
+  try {
+    const user = await usersManager.findByEmail(email);
+    if (!user) {
+      return done(null, false);
+    }
+    const isPasswordValid = await compareData(password, user.password);
+    if (!isPasswordValid) {
+      return done(null, false);
+    }
+
+    const userResDTO = new UserResDTO(user);
+    return done(null, userResDTO);
+  } catch (error) {
+    done(error);
+  }
 }));
+
 //Github 
 passport.use('github', new GithubStrategy({
     clientID: config.git_client_id,

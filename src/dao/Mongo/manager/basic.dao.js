@@ -51,10 +51,3 @@ export default class BasicManager{
         }
     }
 }
-/* despues importar usermodel y basic y usar como class UsersManager  extends BasicManager{
-    constructor(){
-        super(usersModel)
-    }
-    const users = neW usersManager()
-    si necesito un  metodo mas especifico simplemente lo agrego en el manager que necesito  igual que si necesito pasarle un populate
-} */

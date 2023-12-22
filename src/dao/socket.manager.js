@@ -1,5 +1,5 @@
-import { productManager } from "./products.manager.js";
-import { messageManager } from "./message.manager.js";
+import { productManager } from "./Mongo/manager/products.dao.js";
+import { messageManager } from "./Mongo/manager/message.dao.js";
 
 class SocketManager {
   constructor(socketServer) {

@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken'
-import config from '../config.js'
+import config from '../config/config.js'
 const SECRET_JWT_KEY = config.secret_jwt
 
 
-// jwtValidator middleware
 export const jwtValidator = (req, res, next) => {
     try {
         const token = req.cookies.token;
@@ -19,10 +18,17 @@ export const jwtValidator = (req, res, next) => {
     } catch (error) {
         req.user = null;
         req.authenticated = false;
-        res.json({ error: error.message });
+        return res.status(401).json({ error: 'Unauthorized' }); 
     }
 };
 
+export const getUserIdAndCartIdFromToken = (token) => {
+    const decodedToken = jwt.verify(token, SECRET_JWT_KEY);
+    return {
+        userId: decodedToken.userId,
+        cartId: decodedToken.cartId,
+    };
+};
 
 
 /* export const jwtValidator = (req, res, next) => {

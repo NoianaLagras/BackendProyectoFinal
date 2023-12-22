@@ -1,5 +1,5 @@
 import {existsSync , promises} from 'fs';
-import { ProductManager } from './ProductManager.js';
+import { ProductManager } from './ProductManager.memory.js';
 import __dirname from '../../utils.js';
 
 const productManager = new ProductManager(`${__dirname}../../Products.JSON`)

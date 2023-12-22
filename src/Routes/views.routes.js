@@ -1,12 +1,18 @@
 import { Router } from "express";
 import __dirname from '../utils.js';
+
+import { productManager }  from "../dao/Mongo/manager/products.dao.js";
+import { messageManager } from "../dao/Mongo/manager/message.dao.js";
+import { cartsManager } from "../dao/Mongo/manager/carts.dao.js";
+
+//auth
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import { jwtValidator } from "../middlewares/jwt.middleware.js";
+import { jwtValidator , getUserIdAndCartIdFromToken} from "../middlewares/jwt.middleware.js";
 
-import { productManager }  from "../dao/db/manager/products.manager.js";
-import { messageManager } from "../dao/db/manager/message.manager.js";
-import { cartsManager } from "../dao/db/manager/carts.manager.js";
+import { cartsService } from "../services/cart.service.js";
 
+const adminAuthMiddleware = ['Admin']
+const userAuthMiddleware = ['Admin', 'User']
 
 const viewsRouter = Router();
 viewsRouter.get('/', async (req, res) => {
@@ -30,7 +36,7 @@ viewsRouter.get('/', async (req, res) => {
   }
 });
 
-viewsRouter.get('/realtimeproducts',jwtValidator, authMiddleware(), async (req, res) => {
+viewsRouter.get('/realtimeproducts',jwtValidator, authMiddleware(adminAuthMiddleware), async (req, res) => {
   try {
     const limit = 100; 
 
@@ -46,8 +52,8 @@ viewsRouter.get('/realtimeproducts',jwtValidator, authMiddleware(), async (req, 
   }
 });
 
-
-viewsRouter.get('/chat', async (req, res) => {
+//agregar SOLO USUARIO ENTRA AL CHAT 
+viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
     const messages = await messageManager.findAll();
     res.render('chat', { messages });
@@ -56,7 +62,7 @@ viewsRouter.get('/chat', async (req, res) => {
   }
 });
 
-viewsRouter.get('/api/products',jwtValidator, async (req, res) => {
+viewsRouter.get('/api/products',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
     const { info, result } = await productManager.findAllCustom(req.query);
 
@@ -78,7 +84,7 @@ viewsRouter.get('/api/products',jwtValidator, async (req, res) => {
 });
 
 
-viewsRouter.get('/api/product/:pid', jwtValidator, async (req, res) => {
+viewsRouter.get('/api/product/:pid', jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
       const pid = req.params.pid;
       const { cartId } = req.user;
@@ -100,7 +106,7 @@ viewsRouter.get('/api/cart/:cid', async (req, res) => {
   try {
     const idCart = req.params.cid;
     const {cart , total} = await cartsManager.findCartById(idCart); 
-    res.render('cart', { cart ,total });
+    res.render('cart', { cart ,total ,idCart});
    } catch (error) {
 
     res.status(500).send('Error al renderizar la página de carrito');
@@ -123,8 +129,25 @@ viewsRouter.get('/login', async (req, res) => {
  res.render('login', { user: req.user });
 });
 
+//purchase
+viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
+  const { idCart } = req.params;
+  const { email: userEmail } = req.user;
 
+  try {
+      const response = await cartsService.purchase(idCart, userEmail, req.user);
+      res.json(response);
+      console.log('purchased', response);
+  } catch (error) {
+      console.error('Error en la ruta de compra', error);
 
+      if (error.message === "El carrito no se ha recuperado correctamente") {
+          res.status(404).json({ error: 'Carrito no encontrado' });
+      } else {
+          res.status(500).json({ error: 'Internal Server Error' });
+      }
+  }
+});
 
 
 

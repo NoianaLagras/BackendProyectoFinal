@@ -1,7 +1,12 @@
-import { cartsManager } from "../dao/db/manager/carts.manager.js";
+import { ticketDao } from "../dao/Mongo/manager/Tickets.dao.js";
+import { cartsManager } from "../dao/Mongo/manager/carts.dao.js";
+import { v4 as uuidv4 } from 'uuid';
+
+import { usersManager } from "../dao/Mongo/manager/users.dao.js";
 
 class CartsService {
   async getAllCarts() {
+    
     try {
       const carts = await cartsManager.findAll();
       return { message: "Carritos :", carts };
@@ -37,10 +42,9 @@ class CartsService {
       return { cart };
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
-      throw error; 
+      throw error;
     }
   }
-  
 
   async removeAllProducts(idCart) {
     try {
@@ -86,7 +90,64 @@ class CartsService {
       throw new Error("Error al actualizar carrito");
     }
   }
+
+  async purchase(idCart, userEmail, userToken) {
+    try {
+        const { Email, cartId } = userToken;
+
+        if (cartId !== idCart) {
+            throw new Error("El ID del carrito en el token no coincide con el ID proporcionado");
+        }
+
+        const user = await usersManager.findByEmail(userEmail);
+        const { cart, total, cartLength } = await cartsManager.findCartById(idCart);
+
+        if (cart === null) {
+            throw new Error("El carrito no se ha recuperado correctamente");
+        }
+
+        const products = cart.products;
+        console.log("Products:", products);
+
+        let availableProducts = [];
+        let unavailableProducts = [];
+
+        for (let item of products) {
+            if (item.product.stock >= item.quantity) {
+                availableProducts.push(item);
+                item.product.stock -= item.quantity;
+                await item.product.save();
+            } else {
+                unavailableProducts.push(item);
+            }
+        }
+
+        cart.products = unavailableProducts;
+        await cart.save();
+
+        if (availableProducts.length) {
+            const ticket = {
+                code: uuidv4(),
+                amount: total,
+                purchase_datetime: new Date(),
+                purchaser: user._id,
+            };
+
+            await ticketDao.createOne(ticket);
+
+            user.orders.push(ticket._id);
+            await user.save();
+
+            return { availableProducts, total };
+        }
+
+        return { unavailableProducts };
+    } catch (error) {
+        console.error('Error en la función de ticket', error);
+        throw error;
+    }
 }
 
+}
 
 export const cartsService = new CartsService();

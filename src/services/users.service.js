@@ -1,5 +1,5 @@
 
-import { usersManager } from '../dao/db/manager/users.manager.js';
+import { usersManager } from '../dao/Mongo/manager/users.dao.js';
 
 class UsersService {
   async findByEmail(email) {

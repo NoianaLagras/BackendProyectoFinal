@@ -1,4 +1,4 @@
-import BasicManager from './basic.manager.js';
+import BasicManager from './basic.dao.js';
 import { UserModel } from '../models/Users.model.js';
 
  class UsersManager extends BasicManager {

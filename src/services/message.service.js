@@ -1,4 +1,4 @@
-import { messageManager } from "../dao/db/manager/message.manager.js";
+import { messageManager } from "../dao/Mongo/manager/message.dao.js";
 
 class MessageService {
     async getAllMessages() {
