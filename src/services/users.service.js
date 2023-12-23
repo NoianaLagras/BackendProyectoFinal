@@ -1,10 +1,10 @@
 
-import { usersManager } from '../dao/Mongo/manager/users.dao.js';
+import { usersRepository } from "../repositories/users.repository.js";
 
 class UsersService {
   async findByEmail(email) {
     try {
-      return await usersManager.findByEmail(email);
+      return await usersRepository.findByEmail(email);
     } catch (error) {
       console.error("Error en al encontrar email", error);
       throw error;

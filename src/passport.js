@@ -1,6 +1,6 @@
 import passport from 'passport';
-import { usersManager } from './dao/Mongo/manager/users.dao.js';
-import { cartsManager } from './dao/Mongo/manager/carts.dao.js';
+//import { usersRepository } from './dao/Mongo/manager/users.dao.js';
+
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
@@ -8,7 +8,8 @@ import { hashData , compareData } from './utils.js';
 import config from './config/config.js';
 import UserResDTO from './DTOs/userResponse.dto.js';
 import UserReqDTO from './DTOs/userRequest.dto.js';
-
+import { cartsRepository } from './repositories/cart.repository.js';
+import { usersRepository } from './repositories/users.repository.js';
 // signup
 passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' },
   async (req, email, password, done) => {
@@ -20,10 +21,10 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameFiel
 
     try {
       const hashedPassword = await hashData(password);
-      const newCart = await cartsManager.createCart();
+      const newCart = await cartsRepository.createCart();
 
       if (email === config.admin_email && password === config.admin_password) {
-        const createdAdmin = await usersManager.createOne({
+        const createdAdmin = await usersRepository.createOne({
           ...userReqDTO,
           password: hashedPassword,
           role: 'Admin',
@@ -32,7 +33,7 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameFiel
         return done(null, createdAdmin);
       }
 
-      const createdUser = await usersManager.createOne({
+      const createdUser = await usersRepository.createOne({
         ...userReqDTO,
         password: hashedPassword,
         cartId: newCart._id
@@ -51,7 +52,7 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email
     return done(null, false);
   }
   try {
-    const user = await usersManager.findByEmail(email);
+    const user = await usersRepository.findByEmail(email);
     if (!user) {
       return done(null, false);
     }
@@ -75,9 +76,9 @@ passport.use('github', new GithubStrategy({
 },async(accessToken,refreshToken,profile,done)=>{
     try {
 
-        const userDB = await usersManager.findByEmail(profile._json.email) 
+        const userDB = await usersRepository.findByEmail(profile._json.email) 
 
-        const newCart = await cartsManager.createCart();
+        const newCart = await cartsRepository.createCart();
 
         //login
         if (userDB){
@@ -96,7 +97,7 @@ passport.use('github', new GithubStrategy({
         isGithub:true,
         cartId: newCart._id
     }
-    const createUser = await usersManager.createOne(infoUser)
+    const createUser = await usersRepository.createOne(infoUser)
     
     return done ( null, createUser)
     } catch (error) {
@@ -121,7 +122,7 @@ passport.serializeUser((user,done) =>{
 
 passport.deserializeUser(async(id,done) =>{
 try {
-    const user = await usersManager.findById(id);
+    const user = await usersRepository.findById(id);
     done (null,user)
 } catch (error) {
     done(error)

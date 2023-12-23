@@ -1,14 +1,14 @@
 import { ticketDao } from "../dao/Mongo/manager/Tickets.dao.js";
-import { cartsManager } from "../dao/Mongo/manager/carts.dao.js";
+
 import { v4 as uuidv4 } from 'uuid';
 
-import { usersManager } from "../dao/Mongo/manager/users.dao.js";
-
+import { cartsRepository } from "../repositories/cart.repository.js";
+import { usersRepository } from "../repositories/users.repository.js";
 class CartsService {
   async getAllCarts() {
     
     try {
-      const carts = await cartsManager.findAll();
+      const carts = await cartsRepository.findAll();
       return { message: "Carritos :", carts };
     } catch (error) {
       throw new Error("Error al obtener los Carts");
@@ -17,7 +17,7 @@ class CartsService {
 
   async getCartById(idCart) {
     try {
-      const cart = await cartsManager.findCartById(idCart);
+      const cart = await cartsRepository.findCartById(idCart);
       if (!cart) {
         return { message: "Carrito no encontrado" };
       }
@@ -29,7 +29,7 @@ class CartsService {
 
   async createCart() {
     try {
-      const createdCart = await cartsManager.createCart();
+      const createdCart = await cartsRepository.createCart();
       return { message: "Carrito creado correctamente", Cart: createdCart };
     } catch (error) {
       throw new Error("Error al crear carrito");
@@ -38,7 +38,7 @@ class CartsService {
 
   async addProductToCart(idCart, idProduct, quantity) {
     try {
-      const cart = await cartsManager.addProductToCart(idCart, idProduct, quantity);
+      const cart = await cartsRepository.addProductToCart(idCart, idProduct, quantity);
       return { cart };
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
@@ -48,7 +48,7 @@ class CartsService {
 
   async removeAllProducts(idCart) {
     try {
-      const updatedCart = await cartsManager.deleteAllProducts(idCart);
+      const updatedCart = await cartsRepository.deleteAllProducts(idCart);
       return { message: "Se ha vaciado el carrito", updatedCart };
     } catch (error) {
       throw new Error("Error vaciando carrito");
@@ -57,7 +57,7 @@ class CartsService {
 
   async removeProductFromCart(idCart, idProduct) {
     try {
-      const updatedCart = await cartsManager.removeProductFromCart(idCart, idProduct);
+      const updatedCart = await cartsRepository.removeProductFromCart(idCart, idProduct);
       if (!updatedCart) {
         return { message: "Producto no encontrado" };
       }
@@ -69,7 +69,7 @@ class CartsService {
 
   async updateCart(idCart, updatedProducts) {
     try {
-      const updatedCart = await cartsManager.updateCart(idCart, updatedProducts);
+      const updatedCart = await cartsRepository.updateCart(idCart, updatedProducts);
       if (!updatedCart) {
         return { message: "Carrito no encontrado" };
       }
@@ -81,7 +81,7 @@ class CartsService {
 
   async updateProductQuantity(idCart, idProduct, quantity) {
     try {
-      const updatedCart = await cartsManager.updateProductQuantity(idCart, idProduct, quantity);
+      const updatedCart = await cartsRepository.updateProductQuantity(idCart, idProduct, quantity);
       if (!updatedCart) {
         return { message: "Carrito o Producto no encontrado" };
       }
@@ -92,19 +92,21 @@ class CartsService {
   }
 
   async purchase(idCart, userEmail, userToken) {
-    try {
-        const { Email, cartId } = userToken;
+    
+        const { email, cartId } = userToken;
 
         if (cartId !== idCart) {
             throw new Error("El ID del carrito en el token no coincide con el ID proporcionado");
         }
 
-        const user = await usersManager.findByEmail(userEmail);
-        const { cart, total, cartLength } = await cartsManager.findCartById(idCart);
+        const user = await usersRepository.findByEmailAndPopulateOrders(userEmail)
+        const { cart, total, cartLength } = await cartsRepository.findCartById(idCart);
 
         if (cart === null) {
+            console.log("Error al recuperar carrito ")
             throw new Error("El carrito no se ha recuperado correctamente");
-        }
+            
+          }
 
         const products = cart.products;
         console.log("Products:", products);
@@ -130,22 +132,31 @@ class CartsService {
                 code: uuidv4(),
                 amount: total,
                 purchase_datetime: new Date(),
-                purchaser: user._id,
+                purchaser: email,
             };
 
-            await ticketDao.createOne(ticket);
+        const createdTicket = await ticketDao.createOne(ticket);
 
-            user.orders.push(ticket._id);
-            await user.save();
-
-            return { availableProducts, total };
-        }
-
-        return { unavailableProducts };
-    } catch (error) {
-        console.error('Error en la función de ticket', error);
-        throw error;
-    }
+      if (createdTicket && createdTicket._id) {
+        user.orders.push(createdTicket._id.toString());
+        await user.save();
+      } else {
+          console.error("El _id de la orden es undefined");
+      }
+      return {
+        success: true,
+        availableProducts,
+        total,
+        message: 'Compra exitosa',
+        unavailableProducts,
+    };
+} else {
+    return {
+        success: false,
+        message: 'No se pudieron comprar los productos seleccionados',
+        unavailableProducts,
+    };
+}
 }
 
 }

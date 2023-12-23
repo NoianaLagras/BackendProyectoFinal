@@ -26,9 +26,8 @@
     <h1>Contactanos !</h1>
     <form id="message-form" action="/chat" method="POST">
     <div class="correo">
-    <p>Correo :</p>
-      <input type="text" name="email" id="email" placeholder="  Correo del usuario" class="inputCorreo">
-      </div>
+    <p>Correo :  {{userEmail}}</p>
+      <input type="hidden" id="email" value="{{userEmail}}"></div>
 
       <div class="mensaje"><p>Mensaje :</p>
       <input type="text" name="message" id="messageInput" placeholder="  Escribe un mensaje" class="inputMensaje" required>

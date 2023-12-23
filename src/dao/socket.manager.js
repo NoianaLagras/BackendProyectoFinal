@@ -1,6 +1,7 @@
-import { productManager } from "./Mongo/manager/products.dao.js";
-import { messageManager } from "./Mongo/manager/message.dao.js";
-
+//import { productRepository } from "./Mongo/manager/products.dao.js";
+//import { messageManagers } from "./Mongo/manager/message.dao.js";
+import { productRepository } from "../repositories/products.repository.js";
+import { messageRepository } from "../repositories/message.repository.js";
 class SocketManager {
   constructor(socketServer) {
     this.socketServer = socketServer;
@@ -29,8 +30,8 @@ class SocketManager {
 
   async handleAddProduct(product) {
     try {
-      const createdProduct = await productManager.createOne(product);
-      const productosActualizados = await productManager.findAllCustom({ limit: 100 });
+      const createdProduct = await productRepository.createOne(product);
+      const productosActualizados = await productRepository.findAllCustom({ limit: 100 });
       const productObject = productosActualizados.result.map(doc => doc.toObject());
       this.socketServer.emit('actualizarProductos', productObject);
     } catch (error) {
@@ -40,10 +41,10 @@ class SocketManager {
 
   async handleDeleteProduct(id) {
     try {
-      const result = await productManager.deleteOne({ _id: id });
-
-      if (result.deletedCount > 0) {
-        const productosActualizados = await productManager.findAllCustom({ limit: 100 });
+      const result = await productRepository.deleteOne(id);
+  
+      if (result) {
+        const productosActualizados = await productRepository.findAllCustom({ limit: 100 });
         const productObject = productosActualizados.result.map(doc => doc.toObject());
         this.socketServer.emit('actualizarProductos', productObject);
       } else {
@@ -53,12 +54,13 @@ class SocketManager {
       console.error('Error al eliminar el producto:', error.message);
     }
   }
+  
 
   async handleAddMessage(data) {
     try {
       const { email, message } = data;
-      const savedMessage = await messageManager.createOne(email, message);
-      const messages = await messageManager.findAll();
+      const savedMessage = await messageRepository.createMessage(email, message);
+      const messages = await messageRepository.getAllMessages();
       this.socketServer.emit('actualizarMensajes', messages);
     } catch (error) {
       console.error('Error al agregar el mensaje:', error.message);

@@ -1,7 +1,7 @@
 import BasicManager from './basic.dao.js';
 import { UserModel } from '../models/Users.model.js';
 
- class UsersManager extends BasicManager {
+export default class UsersManager extends BasicManager {
     constructor() {
         super(UserModel, ''); 
     }
@@ -15,6 +15,14 @@ import { UserModel } from '../models/Users.model.js';
             throw error;
         }
     }
+    async findByEmailAndPopulateOrders(email){
+        try{
+        const response = await  UserModel.findOne({email}).populate('orders');
+        return response;
+    } catch (error) {
+            console.error("Error en findByEmail:", error);
+            throw error;
+        }
+    }
 
 }
-export const usersManager = new UsersManager()

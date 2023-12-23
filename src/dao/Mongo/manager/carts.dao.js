@@ -1,7 +1,7 @@
 import BasicManager from "./basic.dao.js";
 import { CartModel } from "../models/Cart.model.js";
 
-class CartsManager extends BasicManager {
+export default class CartsManager extends BasicManager {
   constructor() {
     super(CartModel, 'products.product');
   }
@@ -105,4 +105,4 @@ class CartsManager extends BasicManager {
   }
 }
 
-export const cartsManager = new CartsManager();
+

@@ -2,7 +2,7 @@
 import BasicManager from "./basic.dao.js";
 import { productsModel } from "../models/Product.model.js";
 
- class ProductManager extends BasicManager {
+export default class ProductManager extends BasicManager {
   constructor() {
     super(productsModel, ''); 
 }
@@ -69,7 +69,7 @@ import { productsModel } from "../models/Product.model.js";
     
 }
 
-export const productManager = new ProductManager();
+
 
 
    /* async findAll(){

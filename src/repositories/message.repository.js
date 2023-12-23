@@ -1,9 +1,13 @@
-import {messageRepository} from "../repositories/message.repository.js";
+import { MessagesManager } from "../dao/factory.js";
 
-class MessageService {
+class MessageRepository {
+  constructor() {
+    this.dao = new MessagesManager();
+  }
+
   async getAllMessages() {
     try {
-      return await messageRepository.getAllMessages();
+      return await this.dao.findAll();
     } catch (error) {
       throw error;
     }
@@ -11,7 +15,7 @@ class MessageService {
 
   async getMessageById(id) {
     try {
-      return await messageRepository.getMessageById(id);
+      return await this.dao.findById(id);
     } catch (error) {
       throw error;
     }
@@ -19,7 +23,7 @@ class MessageService {
 
   async createMessage(email, message) {
     try {
-      return await messageRepository.createMessage(email, message);
+      return await this.dao.createOne(email, message);
     } catch (error) {
       throw error;
     }
@@ -27,8 +31,8 @@ class MessageService {
 
   async deleteMessageById(id) {
     try {
-      const result = await messageRepository.deleteMessageById(id);
-      if (result) {
+      const result = await this.dao.deleteOne(id);
+      if (result.deletedCount > 0) {
         return true;
       } else {
         throw new Error('Mensaje no encontrado para eliminar');
@@ -39,4 +43,4 @@ class MessageService {
   }
 }
 
-export const messageService = new MessageService();
+export const messageRepository = new MessageRepository();

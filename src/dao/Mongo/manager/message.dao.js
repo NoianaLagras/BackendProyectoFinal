@@ -1,7 +1,7 @@
 import BasicManager from "./basic.dao.js";
 import { MessageModel } from "../models/Message.model.js";
 
-class MessageManager extends BasicManager {
+export default class MessageManager extends BasicManager {
   constructor() {
     super(MessageModel, '');
   }
@@ -19,4 +19,3 @@ class MessageManager extends BasicManager {
 
 }
 
-export const messageManager = new MessageManager();
