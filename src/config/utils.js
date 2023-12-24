@@ -1,10 +1,9 @@
-import path from 'path';
+import {dirname , join} from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
-import config from './config/config.js';
+import config from './config.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../');
 import jwt from 'jsonwebtoken';
 export default __dirname;
 

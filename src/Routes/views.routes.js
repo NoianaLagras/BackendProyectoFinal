@@ -1,8 +1,5 @@
 import { Router } from "express";
-import __dirname from '../utils.js';
-
-//import { productRepository }  from "../dao/Mongo/manager/products.dao.js";
-//import { messageManager } from "../dao/Mongo/manager/message.dao.js";
+import __dirname from '../config/utils.js';
 
 //auth
 import { authMiddleware } from "../middlewares/auth.middleware.js";
@@ -12,6 +9,8 @@ import { cartsService } from "../services/cart.service.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { cartsRepository } from "../repositories/cart.repository.js";
 import { productRepository } from "../repositories/products.repository.js";
+import { transport } from "../config/nodemailer.js";
+
 const adminAuthMiddleware = ['Admin']
 const userAuthMiddleware = ['Admin', 'User']
 
@@ -133,31 +132,43 @@ viewsRouter.get('/login', async (req, res) => {
 
 //purchase
 viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
-  
   try {
     const { idCart } = req.params;
     const { email: userEmail } = req.user;
-      const response = await cartsService.purchase(idCart, userEmail, req.user);
 
-      if (response.success) {
-          res.render('purchased', {
-              message: response.message,
-              availableProducts: response.availableProducts,
-              total: response.total,
-              unavailableProducts: response.unavailableProducts,
-          });
-      } else {
-          res.render('purchaseFailed', {
-              message: response.message,
-              unavailableProducts: response.unavailableProducts,
-          });
-      }
+    const response = await cartsService.purchase(idCart, userEmail, req.user);
 
-      console.log('purchased', response);
+    if (response.success) {
+      res.render('purchased', {
+        message: response.message,
+        availableProducts: response.availableProducts,
+        total: response.total,
+        unavailableProducts: response.unavailableProducts,
+      });
+    } else {
+      res.render('purchaseFailed', {
+        message: response.message,
+        unavailableProducts: response.unavailableProducts,
+      });
+    }
+
+    console.log('purchased', response);
+
+    const mailOptions = {
+      from: 'Noi Lagras',
+      to: userEmail,
+      subject: 'Prueba de email - coderBackend',
+      text: `Productos comprados: ${response.availableProducts}\nProductos sin stock: ${response.unavailableProducts}`
+    };
+
+    await transport.sendMail(mailOptions);
+    console.log('Correo electrónico enviado');
+
   } catch (error) {
-      console.error('Error en la ruta de compra', error);
-      res.redirect('/login')
-}});
+    console.error('Error en la ruta de compra', error);
+    res.redirect('/login');
+  }
+});
 
 
 

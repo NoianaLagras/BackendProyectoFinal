@@ -4,7 +4,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
-import { hashData , compareData } from './utils.js';
+import { hashData , compareData } from './config/utils.js';
 import config from './config/config.js';
 import UserResDTO from './DTOs/userResponse.dto.js';
 import UserReqDTO from './DTOs/userRequest.dto.js';

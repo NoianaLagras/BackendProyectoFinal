@@ -1,7 +1,7 @@
 
 import passport from 'passport';
 import { usersService } from '../services/users.service.js';
-import { generateToken, hashData } from '../utils.js';
+import { generateToken, hashData } from '../config/utils.js';
 import UserResDTO from '../DTOs/userResponse.dto.js'
 
 class UsersController {

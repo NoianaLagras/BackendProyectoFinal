@@ -1,5 +1,5 @@
 import express  from "express";
-import __dirname from './utils.js';
+import __dirname from './config/utils.js';
 
 import exphbs from 'express-handlebars';
 import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access';
@@ -26,7 +26,7 @@ import { socketManager } from "./dao/socket.manager.js";
 import config from './config/config.js'
 
 const app = express();
-const PORT = 8080 ;
+const PORT = config.port
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
