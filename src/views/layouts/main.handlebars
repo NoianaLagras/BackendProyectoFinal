@@ -21,6 +21,10 @@
         <a class="nav-link" href='/chat'>Chat</a ->
       </div>
     </div>
+    {{#unless user}}
+                    <a class="nav-link text-white" href="/login">Iniciar sesión</a>
+                {{/unless}}
+    
   </div>
 </nav>
     {{{body}}}

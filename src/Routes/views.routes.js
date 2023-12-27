@@ -10,6 +10,7 @@ import { messageRepository } from "../repositories/message.repository.js";
 import { cartsRepository } from "../repositories/cart.repository.js";
 import { productRepository } from "../repositories/products.repository.js";
 import { transport } from "../config/nodemailer.js";
+import { generateProduct} from "../faker.js";
 
 const adminAuthMiddleware = ['Admin']
 const userAuthMiddleware = ['Admin', 'User']
@@ -24,14 +25,16 @@ viewsRouter.get('/', async (req, res) => {
     });
 
     const productObject = result.map(doc => doc.toObject());
-
+    
    
 
     res.render('home', {
-      productList: productObject
+      productList: productObject,
+
     });
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
@@ -181,4 +184,28 @@ viewsRouter.get('/error', async (req, res) => {
   
   res.render('error')
  });
+
+
+
+
+ /* json mocking
+ viewsRouter.get('/mockingproducts', async (req, res) => {
+  const products = [];
+  for (let i = 0; i < 100; i++) {
+    products.push(generateProduct());
+  }
+  res.json(products)})*/
+
+ // Renderizado  de productos mocking:
+ viewsRouter.get('/mockingproducts', async (req, res) => {
+  const products = [];
+  for (let i = 0; i < 100; i++) {
+    products.push(generateProduct());
+  }
+  res.render('home', {
+    productList: products,
+    
+  });}) 
+
+ 
 export default viewsRouter;

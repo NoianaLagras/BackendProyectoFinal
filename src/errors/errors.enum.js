@@ -1,0 +1,41 @@
+export const errorName = {
+    PRODUCT_NOT_FOUND: 'Product Not Found',
+    PRODUCTS_NOT_FOUND: 'Products Not Found',
+    CART_NOT_FOUND: 'Cart Not Found',
+    CARTS_NOT_FOUND: 'Carts not found',
+    CART_NOT_CREATED: 'Cart not created',
+    EMAIL_NOT_FOUND: 'Email Not found',
+    INVALID_CART_CREDENTIALS: 'Invalid credentials',
+    MESSAGE_NOT_FOUND: 'Message Not Found',
+    MESSAGE_REMOVE: 'Message not found to remove',
+    UPDATED_PRODUCTS: 'Product not updated',
+    UPDATED_CART: 'Cart not updated',
+    USER_NOT_FOUND: 'User Not Found',
+    REMOVE_ALL_FROM_CART: 'Products not removed',
+    REMOVE_FROM_CART: 'Remove from cart',
+    PRODUCT_CODE_ALREADY_EXISTS: 'Product code already exists',
+    INVALID_CREDENTIALS: 'Unauthorized',
+    INVALID_QUANTITY: 'Invalid quantity',
+    ADD_TO_CART: 'Product not added'
+ };
+  
+  export const errorMessage = {
+    PRODUCT_NOT_FOUND: 'Producto no encontrado por id',
+    PRODUCTS_NOT_FOUND: 'No se han encontrado products',
+    CARTS_NOT_FOUND: 'Error al obtener los carritos',
+    CART_NOT_FOUND: 'Carrito no encontrado por id',
+    CART_NOT_CREATED: 'Error al crear carrito',
+    EMAIL_NOT_FOUND: ' Email no registrado',
+    MESSAGE_NOT_FOUND: 'Mensaje no encontrado',
+    MESSAGE_REMOVE: 'Mensaje no encontrado',
+    UPDATED_CART: 'Error al actualizar carrito',
+    INVALID_CART_CREDENTIALS: 'El ID del carrito en el token no coincide con el ID proporcionado',
+    USER_NOT_FOUND: 'Usuario no encontrado',
+    PRODUCT_CODE_ALREADY_EXISTS: 'El código de producto ya existe',
+    INVALID_CREDENTIALS: 'Acceso no autorizado',
+    INVALID_QUANTITY: 'Cantidad inválida',
+    REMOVE_ALL_FROM_CART: 'Error al vaciar carrito',
+    REMOVE_FROM_CART: 'Error al eliminar producto del carrito',
+    ADD_TO_CART: 'Error al agregar producto al carrito',
+  };
+  

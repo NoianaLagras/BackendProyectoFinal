@@ -6,6 +6,7 @@ import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access
 import Handlebars from 'handlebars';
 
 import flash from "express-flash";
+//import compression from "express-compression";
 import { Server } from "socket.io";
 
 import productsRouter from "./Routes/products.routes.js";
@@ -24,9 +25,12 @@ import "./dao/Mongo/configDB.js"
 //socket
 import { socketManager } from "./dao/socket.manager.js";
 import config from './config/config.js'
+import { errorMiddleware } from "./middlewares/error.middleware.js";
 
 const app = express();
 const PORT = config.port
+
+//app.use(compression({ brotli: { enable: true, params: {  zlib: {   level: 6 }  }}}));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -77,7 +81,8 @@ app.use('/', viewsRouter);
 app.use('/api/sessions', sessionRouter)
 app.use('/chat', messageRouter);
 app.use('/products', productsRouter);
-
+//error 
+app.use(errorMiddleware)
 // Iniciar el servidor
 const httpServer = app.listen(PORT, () => {
     console.log(`Escuchando en el puerto ${PORT}`);

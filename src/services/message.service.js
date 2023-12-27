@@ -1,11 +1,12 @@
 import {messageRepository} from "../repositories/message.repository.js";
-
+import { errorMessage , errorName } from "../errors/errors.enum.js";
+import customError from '../errors/errors.generator.js'
 class MessageService {
   async getAllMessages() {
     try {
       return await messageRepository.getAllMessages();
     } catch (error) {
-      throw error;
+      throw customError.generateError(errorMessage.MESSAGE_NOT_FOUND, 404, errorName.MESSAGE_NOT_FOUND);
     }
   }
 
@@ -13,7 +14,7 @@ class MessageService {
     try {
       return await messageRepository.getMessageById(id);
     } catch (error) {
-      throw error;
+      throw customError.generateError(errorMessage.MESSAGE_NOT_FOUND, error.code, errorName.MESSAGE_NOT_FOUND);
     }
   }
 
@@ -21,7 +22,7 @@ class MessageService {
     try {
       return await messageRepository.createMessage(email, message);
     } catch (error) {
-      throw error;
+      throw customError.generateError(errorMessage.MESSAGE_NOT_FOUND, error.code, errorName.MESSAGE_NOT_FOUND);
     }
   }
 
@@ -31,10 +32,10 @@ class MessageService {
       if (result) {
         return true;
       } else {
-        throw new Error('Mensaje no encontrado para eliminar');
+        throw customError.generateError(errorMessage.MESSAGE_REMOVE, null, errorName.MESSAGE_REMOVE);
       }
     } catch (error) {
-      throw error;
+      throw customError.generateError(errorMessage.MESSAGE_REMOVE, error.code, errorName.MESSAGE_REMOVE);
     }
   }
 }

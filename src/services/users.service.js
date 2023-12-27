@@ -1,16 +1,15 @@
 
 import { usersRepository } from "../repositories/users.repository.js";
-
+import customError from '../errors/errors.generator.js'
+import { errorMessage, errorName } from "../errors/errors.enum.js";
 class UsersService {
   async findByEmail(email) {
     try {
       return await usersRepository.findByEmail(email);
     } catch (error) {
-      console.error("Error en al encontrar email", error);
-      throw error;
+      throw customError.generateError(errorMessage.EMAIL_NOT_FOUND, error.code, errorName.EMAIL_NOT_FOUND);
     }
   }
-
 }
 
 

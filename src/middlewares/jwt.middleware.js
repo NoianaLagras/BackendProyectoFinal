@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import config from '../config/config.js'
 const SECRET_JWT_KEY = config.secret_jwt
+import customError from '../errors/errors.generator.js';
+import { errorMessage, errorName } from '../errors/errors.enum.js';
 
 
 export const jwtValidator = (req, res, next) => {
@@ -18,17 +20,10 @@ export const jwtValidator = (req, res, next) => {
     } catch (error) {
         req.user = null;
         req.authenticated = false;
-        return res.status(401).json({ error: 'Unauthorized' }); 
+        throw customError.generateError(errorMessage.INVALID_CREDENTIALS, 401, errorName.INVALID_CREDENTIALS);
     }
 };
 
-export const getUserIdAndCartIdFromToken = (token) => {
-    const decodedToken = jwt.verify(token, SECRET_JWT_KEY);
-    return {
-        userId: decodedToken.userId,
-        cartId: decodedToken.cartId,
-    };
-};
 
 
 /* export const jwtValidator = (req, res, next) => {
