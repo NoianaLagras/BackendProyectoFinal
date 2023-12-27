@@ -73,6 +73,9 @@ viewsRouter.get('/api/products',jwtValidator,authMiddleware(userAuthMiddleware),
   const productObject = result.map(doc => doc.toObject());
   const { cartId } = req.user;
   const { cartLenght } = await cartsRepository.findCartById(cartId);
+  if (req.session.errorMessage) {
+    return res.redirect('/error');
+}
  res.render('products', {
       productList: productObject,
       user: req.user,
@@ -180,11 +183,13 @@ viewsRouter.get('/restore', async (req, res) => {
   
  res.render('restore')
 });
-viewsRouter.get('/error', async (req, res) => {
-  
-  res.render('error')
- });
 
+viewsRouter.get('/error', async (req, res) => {
+  const errorMessage = req.session.errorMessage;
+  req.session.errorMessage = null;
+
+  res.render('error', { errorMessage });
+});
 
 
 

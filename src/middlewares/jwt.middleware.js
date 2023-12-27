@@ -1,18 +1,22 @@
-import jwt from 'jsonwebtoken'
-import config from '../config/config.js'
-const SECRET_JWT_KEY = config.secret_jwt
+
+import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 import customError from '../errors/errors.generator.js';
 import { errorMessage, errorName } from '../errors/errors.enum.js';
 
+const SECRET_JWT_KEY = config.secret_jwt;
 
 export const jwtValidator = (req, res, next) => {
     try {
         const token = req.cookies.token;
+
         if (!token) {
             req.user = null;
             req.authenticated = false;
+            req.invalidToken = true;
             return next();
         }
+
         const userToken = jwt.verify(token, SECRET_JWT_KEY);
         req.user = userToken;
         req.authenticated = true;
@@ -20,9 +24,11 @@ export const jwtValidator = (req, res, next) => {
     } catch (error) {
         req.user = null;
         req.authenticated = false;
-        throw customError.generateError(errorMessage.INVALID_CREDENTIALS, 401, errorName.INVALID_CREDENTIALS);
+        req.invalidToken = true;
+        next();
     }
 };
+
 
 
 
