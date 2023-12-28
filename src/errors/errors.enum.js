@@ -32,7 +32,7 @@ export const errorName = {
   GITHUB_CALLBACK_ERROR: 'GitHub Callback Error',
   GITHUB_AUTH_ERROR: 'GitHub Auth Error',
   GET_CURRENT_USER_ERROR: 'Get Current User Error',
-  RESTORE_PASSWORD_ERROR:'Restore error'
+
 };
 
 export const errorMessage = {
@@ -69,5 +69,4 @@ export const errorMessage = {
   GITHUB_CALLBACK_ERROR: 'Error en la autenticación de GitHub',
   GITHUB_AUTH_ERROR: 'Error en la autenticación de GitHub',
   GET_CURRENT_USER_ERROR: 'Error al obtener el usuario actual',
-  RESTORE_PASSWORD_ERROR:'Error al restaurar password'
 };
