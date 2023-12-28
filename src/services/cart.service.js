@@ -12,7 +12,7 @@ class CartsService {
       const carts = await cartsRepository.findAll();
       return { message: "Carritos :", carts };
     } catch (error) {
-      throw customError.generateError(errorMessage.CARTS_NOT_FOUND, error.code, errorName.CARTS_NOT_FOUND);
+    throw customError.generateError(errorMessage.CARTS_NOT_FOUND, error.code, errorName.CARTS_NOT_FOUND);
     }
   }
 
@@ -26,6 +26,7 @@ class CartsService {
       return { cart };
     } catch (error) {
       throw customError.generateError(errorMessage.CART_NOT_FOUND, error.code, errorName.CART_NOT_FOUND);
+      ;
     }
   }
 

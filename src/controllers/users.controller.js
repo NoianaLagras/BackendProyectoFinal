@@ -1,17 +1,19 @@
-
 import passport from 'passport';
 import { usersService } from '../services/users.service.js';
 import { generateToken, hashData } from '../config/utils.js';
-import UserResDTO from '../DTOs/userResponse.dto.js'
+import UserResDTO from '../DTOs/userResponse.dto.js';
+import customError from '../errors/errors.generator.js';
+import { errorMessage, errorName } from '../errors/errors.enum.js';
+import { handleErrors } from '../errors/handle.Errors.js';
 
 class UsersController {
   async signup(req, res, next) {
     passport.authenticate('signup', (err, user, info) => {
       if (err) {
-        return next(err);
+        handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
       }
       if (!user) {
-        return res.redirect('/error');
+        handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
       }
       res.redirect('/login');
     })(req, res, next);
@@ -20,17 +22,17 @@ class UsersController {
   async login(req, res, next) {
     passport.authenticate('login', async (err, user, info) => {
       if (err || !user) {
-        return res.redirect('/error');
+        handleErrors(res, customError.generateError(errorMessage.LOGIN_ERROR, 500, errorName.LOGIN_ERROR));
       }
       req.login(user, { session: false }, async (error) => {
         if (error) {
-          return next(error);
+          handleErrors(res, customError.generateError(errorMessage.LOGIN_ERROR, 500, errorName.LOGIN_ERROR));
         }
 
         const { Usuario, email, role, cartId } = user;
         const token = generateToken({ Usuario, email, role, cartId });
 
-        res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+        res.cookie('token', token, { maxAge: 120000, httpOnly: true });
         res.redirect('/api/products');
       });
     })(req, res, next);
@@ -46,7 +48,7 @@ class UsersController {
     try {
       const user = await usersService.findByEmail(email);
       if (!user) {
-        return res.redirect('/signup');
+        handleErrors(res, customError.generateError(errorMessage.EMAIL_NOT_FOUND, 404, errorName.EMAIL_NOT_FOUND));
       }
 
       const hashedPassword = await hashData(password);
@@ -55,7 +57,7 @@ class UsersController {
 
       res.status(200).json({ message: 'Password Actualizada' });
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+      handleErrors(res, customError.generateError(errorMessage.RESTORE_PASSWORD_ERROR, 500, errorName.RESTORE_PASSWORD_ERROR));
     }
   }
 
@@ -63,10 +65,10 @@ class UsersController {
     try {
       const { Usuario, email, role, cartId } = req.user;
       const token = generateToken({ Usuario, email, role, cartId });
-      res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+      res.cookie('token', token, { maxAge: 120000, httpOnly: true });
       res.redirect('/api/products');
     } catch (error) {
-      res.redirect('/error');
+      handleErrors(res, customError.generateError(errorMessage.GITHUB_CALLBACK_ERROR, 500, errorName.GITHUB_CALLBACK_ERROR));
     }
   }
 
@@ -79,11 +81,11 @@ class UsersController {
 
   async getCurrentUser(req, res) {
     try {
-    const userResponseDTO = new UserResDTO(req.user);
-    const userEmail = req.user.email; 
+      const userResponseDTO = new UserResDTO(req.user);
+      const userEmail = req.user.email;
       res.json({ user: userResponseDTO, email: userEmail });
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+      handleErrors(res, customError.generateError(errorMessage.GET_CURRENT_USER_ERROR, 500, errorName.GET_CURRENT_USER_ERROR));
     }
   }
 }

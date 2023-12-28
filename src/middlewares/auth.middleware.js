@@ -1,5 +1,5 @@
-import customError from '../errors/errors.generator.js';
-import { errorMessage, errorName } from '../errors/errors.enum.js';
+
+import { errorMessage} from '../errors/errors.enum.js';
 
 export const authMiddleware = (authorizedRole) => {
     return (req, res, next) => {

@@ -48,7 +48,7 @@ app.use(
       mongoUrl: URI,
     }),
     secret: config.secret_session,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 120000 },
   })
 );
 
@@ -81,7 +81,7 @@ app.use('/', viewsRouter);
 app.use('/api/sessions', sessionRouter)
 app.use('/chat', messageRouter);
 app.use('/products', productsRouter);
-//error 
+//errores
 app.use(errorMiddleware)
 // Iniciar el servidor
 const httpServer = app.listen(PORT, () => {

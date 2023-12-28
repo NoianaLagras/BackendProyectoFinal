@@ -1,8 +1,7 @@
 
 import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
-import customError from '../errors/errors.generator.js';
-import { errorMessage, errorName } from '../errors/errors.enum.js';
+
 
 const SECRET_JWT_KEY = config.secret_jwt;
 

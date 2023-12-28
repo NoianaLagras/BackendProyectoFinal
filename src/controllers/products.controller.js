@@ -1,4 +1,7 @@
 import { productService } from "../services/products.service.js";
+import customError from "../errors/errors.generator.js";
+import { errorMessage, errorName } from "../errors/errors.enum.js";
+import { handleErrors } from "../errors/handle.Errors.js";
 
 class ProductController {
   async getAllProducts(req, res) {
@@ -17,7 +20,7 @@ class ProductController {
         nextLink: products.info.nextLink,
       });
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener los productos.' });
+      handleErrors(res, customError.generateError(errorMessage.PRODUCTS_NOT_FOUND, 500, errorName.PRODUCTS_NOT_FOUND));
     }
   }
 
@@ -28,10 +31,10 @@ class ProductController {
       if (product) {
         res.status(200).json({ message: 'Producto encontrado', product });
       } else {
-        res.status(404).json({ error: 'Producto no encontrado.' });
+        handleErrors(res, customError.generateError(errorMessage.PRODUCT_NOT_FOUND, 404, errorName.PRODUCT_NOT_FOUND));
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener el producto.' });
+      handleErrors(res, customError.generateError(errorMessage.GET_PRODUCT_ERROR, 500, errorName.GET_PRODUCT_ERROR));
     }
   }
 
@@ -40,7 +43,7 @@ class ProductController {
       const createdProduct = await productService.createProduct(req.body);
       res.status(200).json({ message: 'Producto agregado correctamente', product: createdProduct });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      handleErrors(res, customError.generateError(errorMessage.CREATE_PRODUCT_ERROR, 400, errorName.CREATE_PRODUCT_ERROR));
     }
   }
 
@@ -54,10 +57,10 @@ class ProductController {
       if (isUpdated) {
         res.status(200).json({ message: 'Producto actualizado correctamente' });
       } else {
-        res.status(404).json({ error: 'Producto no encontrado para actualizar' });
+        handleErrors(res, customError.generateError(errorMessage.UPDATED_PRODUCTS, 404, errorName.UPDATED_PRODUCTS));
       }
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      handleErrors(res, customError.generateError(errorMessage.UPDATE_PRODUCT_ERROR, 400, errorName.UPDATE_PRODUCT_ERROR));
     }
   }
 
@@ -69,9 +72,11 @@ class ProductController {
 
       if (isDeleted) {
         res.json({ message: 'Producto eliminado correctamente' });
+      } else {
+        handleErrors(res, customError.generateError(errorMessage.PRODUCT_NOT_FOUND, 404, errorName.PRODUCT_NOT_FOUND));
       }
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      handleErrors(res, customError.generateError(errorMessage.DELETE_PRODUCT_ERROR, 400, errorName.DELETE_PRODUCT_ERROR));
     }
   }
 }
