@@ -1,6 +1,6 @@
 import { Router } from "express";
 import __dirname from '../config/utils.js';
-
+import { logger } from "../config/logger.js";
 //auth
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { jwtValidator } from "../middlewares/jwt.middleware.js";
@@ -34,7 +34,7 @@ viewsRouter.get('/', async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error)
+    logger.error(error)
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
@@ -158,7 +158,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
       });
     }
 
-    console.log('purchased', response);
+    logger.info('purchased', response);
 
     const mailOptions = {
       from: 'Noi Lagras',
@@ -168,10 +168,10 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     };
 
     await transport.sendMail(mailOptions);
-    console.log('Correo electrónico enviado');
+    logger.info('Correo electrónico enviado');
 
   } catch (error) {
-    console.error('Error en la ruta de compra', error);
+    logger.error('Error en la ruta de compra', error);
     res.redirect('/login');
   }
 });

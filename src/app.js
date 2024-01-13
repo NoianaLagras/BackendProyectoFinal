@@ -26,7 +26,8 @@ import "./dao/Mongo/configDB.js"
 import { socketManager } from "./dao/socket.manager.js";
 import config from './config/config.js'
 import { errorMiddleware } from "./middlewares/error.middleware.js";
-
+import { logger } from "./config/logger.js";
+import loggerRouter from "./Routes/logger.routes.js";
 const app = express();
 const PORT = config.port
 
@@ -81,15 +82,16 @@ app.use('/', viewsRouter);
 app.use('/api/sessions', sessionRouter)
 app.use('/chat', messageRouter);
 app.use('/products', productsRouter);
+app.use('/loggerTest',loggerRouter)
 //errores
 app.use(errorMiddleware)
 // Iniciar el servidor
 const httpServer = app.listen(PORT, () => {
-    console.log(`Escuchando en el puerto ${PORT}`);
-});
+  logger.info(`Escuchando en el puerto ${PORT}`);
+}); 
 
 app.on('error', (error) => {
-    console.log(`Error: ${error}`);
+  logger.error(`Error: ${error}`);
 });
 
 const socketServer = new Server(httpServer);

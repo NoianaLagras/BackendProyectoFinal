@@ -11,7 +11,7 @@ export default class UsersManager extends BasicManager {
         const response = await  UserModel.findOne({email});
         return response;
     } catch (error) {
-            console.error("Error en findByEmail:", error);
+        logger.error(`Error en findByEmail: ${error.message}`);
             throw error;
         }
     }
@@ -20,7 +20,7 @@ export default class UsersManager extends BasicManager {
         const response = await  UserModel.findOne({email}).populate('orders');
         return response;
     } catch (error) {
-            console.error("Error en findByEmail:", error);
+        logger.error(`Error en findByEmailAndPopulate: ${error.message}`);
             throw error;
         }
     }

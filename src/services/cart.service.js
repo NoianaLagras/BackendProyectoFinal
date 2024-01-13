@@ -1,5 +1,5 @@
 import { ticketDao } from "../dao/Mongo/manager/Tickets.dao.js";
-
+import { logger } from "../config/logger.js";
 import { v4 as uuidv4 } from 'uuid';
 
 import { cartsRepository } from "../repositories/cart.repository.js";
@@ -46,7 +46,7 @@ class CartsService {
       const cart = await cartsRepository.addProductToCart(idCart, idProduct, quantity);
       return { cart };
     } catch (error) {
-      console.error("Error al agregar producto al carrito:", error);
+      logger.error(`Error al agregar producto al carrito: ${error}`);
       throw customError.generateError(errorMessage.ADD_TO_CART, error.code, errorName.ADD_TO_CART);
     }
   }
@@ -108,13 +108,12 @@ class CartsService {
       const { cart, total, cartLength } = await cartsRepository.findCartById(idCart);
 
       if (cart === null) {
-        console.log("Error al recuperar carrito ");
+        logger.warning("Error al recuperar carrito ");
         throw customError.generateError(errorMessage.CART_NOT_FOUND, null, errorName.CART_NOT_FOUND);
       }
 
       const products = cart.products;
-      console.log("Products:", products);
-
+      logger.info(`Products: ${products}`);
       let availableProducts = [];
       let unavailableProducts = [];
 
@@ -145,7 +144,7 @@ class CartsService {
           user.orders.push(createdTicket._id.toString());
           await user.save();
         } else {
-          console.error("El _id de la orden es undefined");
+          logger.error("El _id de la orden es undefined");
           throw customError.generateError(errorMessage.MESSAGE_NOT_FOUND, null, errorName.MESSAGE_NOT_FOUND);
         }
 

@@ -1,5 +1,6 @@
 
 import { errorMessage} from '../errors/errors.enum.js';
+import { logger } from '../config/logger.js';
 
 export const authMiddleware = (authorizedRole) => {
     return (req, res, next) => {
@@ -9,12 +10,12 @@ export const authMiddleware = (authorizedRole) => {
             } else {
                 req.session.errorMessage = errorMessage.AUTHORIZATION_ERROR;
             }
-
+            logger.error('Autenticación fallida, redirigiendo');
             return res.redirect('/error');
         }
 
         if (!req.user || !authorizedRole.includes(req.user.role)) {
-            console.log('Not authorized');
+            logger.warning('Not authorized');
             req.session.errorMessage = errorMessage.INVALID_CREDENTIALS;
             return res.redirect('/error');
         }

@@ -2,16 +2,18 @@
 //import { messageManagers } from "./Mongo/manager/message.dao.js";
 import { productRepository } from "../repositories/products.repository.js";
 import { messageRepository } from "../repositories/message.repository.js";
+import { logger } from "../config/logger.js";
+
 class SocketManager {
   constructor(socketServer) {
     this.socketServer = socketServer;
   }
 
   handleConnection(socket) {
-    console.log(`Cliente Conectado: ${socket.id}`);
+    logger.info(`Cliente Conectado: ${socket.id}`);
 
     socket.on("disconnect", () => {
-      console.log(`Cliente Desconectado: ${socket.id}`);
+      logger.info(`Cliente Desconectado: ${socket.id}`);
     });
 
     // RealTimeProducts
@@ -35,7 +37,7 @@ class SocketManager {
       const productObject = productosActualizados.result.map(doc => doc.toObject());
       this.socketServer.emit('actualizarProductos', productObject);
     } catch (error) {
-      console.error('Error al agregar el producto:', error.message);
+      logger.error(`Error al agregar el producto: ${error.message}`);
     }
   }
 
@@ -48,10 +50,10 @@ class SocketManager {
         const productObject = productosActualizados.result.map(doc => doc.toObject());
         this.socketServer.emit('actualizarProductos', productObject);
       } else {
-        console.error('El producto no se encontró para eliminar.');
+        logger.warning('El producto no se encontró para eliminar.');
       }
     } catch (error) {
-      console.error('Error al eliminar el producto:', error.message);
+      logger.error(`Error al eliminar: ${error.message}`);
     }
   }
   
@@ -63,7 +65,7 @@ class SocketManager {
       const messages = await messageRepository.getAllMessages();
       this.socketServer.emit('actualizarMensajes', messages);
     } catch (error) {
-      console.error('Error al agregar el mensaje:', error.message);
+      logger.error(`Error al enviar mensaje ${error.message}`);
     }
   }
 }
