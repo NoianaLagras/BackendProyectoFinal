@@ -4,18 +4,24 @@ import { logger } from "../config/logger.js";
 //auth
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { jwtValidator } from "../middlewares/jwt.middleware.js";
-
+import flash from "express-flash";
 import { cartsService } from "../services/cart.service.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { cartsRepository } from "../repositories/cart.repository.js";
 import { productRepository } from "../repositories/products.repository.js";
 import { transport } from "../config/nodemailer.js";
 import { generateProduct} from "../faker.js";
-
+import config from "../config/config.js";
+import { UsersManager } from "../dao/factory.js";
+import { usersRepository } from "../repositories/users.repository.js";
+import { usersController } from "../controllers/users.controller.js";
+import { usersService } from "../services/users.service.js";
 const adminAuthMiddleware = ['Admin']
-const userAuthMiddleware = ['Admin', 'User']
+const adminPremiumMiddleware=['Admin', 'Premium']
+const userAuthMiddleware = ['Admin', 'User','Premium']
 
 const viewsRouter = Router();
+
 viewsRouter.get('/', async (req, res) => {
   try {
     const limit = 12;
@@ -39,23 +45,53 @@ viewsRouter.get('/', async (req, res) => {
   }
 });
 
-viewsRouter.get('/realtimeproducts',jwtValidator, authMiddleware(adminAuthMiddleware), async (req, res) => {
+viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMiddleware), async (req, res) => {
   try {
-    const limit = 100; 
+    const limit = 100;
 
     const { result } = await productRepository.findAllCustom({
-      limit: limit, 
+      limit: limit,
     });
-    const productObject = result.map(doc => doc.toObject());
-    res.render('realTimeProducts', {
+
+    const productObject = result.map(doc => {
+      const productData = doc.toObject();
+
+      if (req.user.email !== config.admin_email) {
+        productData.owner = 'Premium';
+      } else {
+        productData.owner = 'Admin';
+      }
+      productData.ownerEmail = req.user.email;
+
+      return productData;
+    });
+ res.render('realTimeProducts', {
       productList: productObject,
-    });
+      userEmail: req.user.email, });
   } catch (error) {
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
 
-//agregar SOLO USUARIO ENTRA AL CHAT 
+
+
+viewsRouter.get('/api/users/premium/:uid', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
+  try {
+    const userId = req.params.uid;
+    const user = await usersRepository.findById(userId);
+    const currentRole = user ? user.role : null;
+
+    res.render('roleChange', { userId, currentRole });
+  } catch (error) {
+    console.error(error);
+
+    const message = { error: 'Error interno del servidor' };
+    res.status(500).json(message);
+  }
+});
+
+
+
 viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
     const {email:userEmail}= req.user
@@ -171,18 +207,39 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     logger.info('Correo electrónico enviado');
 
   } catch (error) {
-    logger.error('Error en la ruta de compra', error);
+    logger.error(error);
     res.redirect('/login');
   }
 });
 
 
 
+//restaurar
 
 viewsRouter.get('/restore', async (req, res) => {
-  
- res.render('restore')
+  res.render('restore');
 });
+
+
+
+viewsRouter.get('/restorePassword/:token', async (req, res) => {
+  const { token } = req.params;
+  try {
+const user = await usersService.findByResetToken(token.toString());
+    if (!user || !user.resetToken || user.resetToken.expiration < new Date()) {
+      res.redirect('/restore');
+    } else {
+      res.render('restorePassword', { token });
+    }
+  } catch (error) {
+    logger.error('Error  al restaurar password', error);
+    res.redirect('/restore');
+  }
+});
+
+
+
+
 
 viewsRouter.get('/error', async (req, res) => {
   const errorMessage = req.session.errorMessage;
@@ -190,7 +247,6 @@ viewsRouter.get('/error', async (req, res) => {
 
   res.render('error', { errorMessage });
 });
-
 
 
  /* json mocking

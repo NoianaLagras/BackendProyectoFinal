@@ -15,15 +15,19 @@
 {{#ifEqual user.role 'Admin'}}
   {{user.Usuario}} (Administrador)
 {{else}}
-  {{user.Usuario}} (Usuario)
+  {{user.Usuario}} 
+  {{#ifEqual user.role 'Premium'}}(Premium){{else}}(Usuario){{/ifEqual}}
 {{/ifEqual}}
+
 </a>
 </button>
     <button class="btn btn-dark">
         <a href="/api/sessions/signout" class="signout">Sign Out
         </a>
       </button>
-  
+  <button class="btn btn-dark">
+  <a href="/api/users/premium/{{user._id }}" class="signout">Upgrade rol</a>
+</button>
       </div>
        </header> 
 <a href="/api/cart/{{user.cartId}}"id="carrito"><i class="fa-solid fa-cart-shopping fa-2xl" style="color: #000000;"  ></i><span class="badge">{{ cartLenght }}</span></a>

@@ -1,18 +1,14 @@
- 
- // Cliente
- const socketClient = io();
-
+// Cliente
+const socketClient = io();
 
 // Borrar producto
 function deleteProduct(id) {
   const productId = id;
- socketClient.emit('deleteProduct', productId);
-  }
+  socketClient.emit('deleteProduct', productId);
+}
 
-
-  document.addEventListener('DOMContentLoaded', () => {
-
-  // Campos del form
+document.addEventListener('DOMContentLoaded', () => {
+  // Campos del formulario
   const formularioAgregarProducto = document.getElementById('formularioAgregarProducto');
   const titleInput = document.getElementById('title');
   const descriptionInput = document.getElementById('description');
@@ -21,6 +17,7 @@ function deleteProduct(id) {
   const codeInput = document.getElementById('code');
   const stockInput = document.getElementById('stock');
   const thumbnailsInput = document.getElementById('thumbnails');
+  const userEmailInput = document.getElementById('userEmail'); // Nuevo campo agregado
 
   formularioAgregarProducto.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -32,8 +29,8 @@ function deleteProduct(id) {
       category: categoryInput.value,
       code: codeInput.value,
       stock: parseInt(stockInput.value),
-      thumbnails: thumbnailsInput.value, 
-      
+      thumbnails: thumbnailsInput.value,
+      ownerEmail: userEmailInput.value, 
     };
 
     // Agregar producto
@@ -48,32 +45,29 @@ function deleteProduct(id) {
     stockInput.value = '';
     thumbnailsInput.value = '';
   });
-   
-    socketClient.on('actualizarProductos', (productos) => {
+
+  socketClient.on('actualizarProductos', (productos) => {
     actualizarInterfaz(productos);
   });
 
   function actualizarInterfaz(productList) {
     const container = document.querySelector('.container');
     container.innerHTML = '';
-  
+
     productList.forEach((product) => {
       const card = document.createElement('div');
       card.classList.add('cards');
-  
+
       card.innerHTML = `
         <img src="${product.thumbnails}" alt="Imagen del producto" class="productImage">
         <h3 class="cardTitle">${product.title}</h3>
         <h4 class="cardPrice">$${product.price}</h4>
         <h4 class="cardStock">Stock: ${product.stock}</h4>
+        <p class="cardOwner">Propietario: ${product.owner}, Correo electrónico: ${product.ownerEmail}</p>
         <button data-product-id="${product._id}" onclick="deleteProduct('${product._id}')">Eliminar✖️</button>
       `;
-  
+
       container.appendChild(card);
     });
   }
-  
 });
-
-
-

@@ -1,17 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar contraseña</title>
+</head>
+<body>
+  
 <div class="sesiones">
-    <div class="overlay">
+  <div class="overlay">
     <div class="sesionesChild">
-<h1>Restaurar Contraseña</h1>
-<form action="/api/sessions/restore" method="post" class="sessionForm">
-<p>Correo Electronico :</p>
-<input type="email" name="email" id="email" placeholder="Email" required>
-<p> Nueva Contraseña :</p>
-<input type="password" name="password" id="password" placeholder="Contraseña" required>
-
-<input type="submit" value="Restaurar" class="sessionButton">
-</form>
-
+      <h1>Restablecer Contraseña</h1>
+      <form id="restoreForm" class="sessionForm">
+        <p>Le enviaremos un correo electrónico para restablecer la contraseña</p>
+        <input type="email" name="email" id="email" placeholder="Email" required>
+        <input type="submit" value="Enviar Correo" class="sessionButton">
+      </form>
+    </div>
+  </div>
 </div>
-
-</div>
-</div>
+<script src="/js/sendEmailToRestore.js"></script>
+</body>
+</html>

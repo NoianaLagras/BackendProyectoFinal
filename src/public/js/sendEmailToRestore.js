@@ -1,0 +1,41 @@
+function showAlert(message, className) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert ${className} mt-3`;
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.appendChild(document.createTextNode(message));
+
+    const container = document.querySelector('.sesionesChild');
+
+    container.insertBefore(alertDiv, container.firstChild);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+
+document.getElementById('restoreForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+
+    fetch('http://localhost:8080/api/sessions/restore', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al enviar el formulario');
+        }
+        return response.json();
+    })
+    .then(data => {
+        showAlert(data.message, 'alert-success');
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        showAlert('Error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.', 'alert-danger');
+    });
+});

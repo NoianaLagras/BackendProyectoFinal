@@ -1,5 +1,6 @@
 export default class UserResDTO {
     constructor(user) {
+      this._id = user._id;
       this.name = user.name
       this.Usuario = user.Usuario;
       this.isGithub = user.isGithub;

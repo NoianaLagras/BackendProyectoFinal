@@ -27,7 +27,21 @@ class UsersRepository {
       
     }
   }
-  
+  async findById(id){
+    try {
+      return await this.dao.findById(id)
+    } catch (error) {
+      logger.error(`Error encontrar id ${error}`);
+      
+    }
+  }
+  async findByResetToken(token) {
+    try {
+  return await this.dao.findByResetToken(token);
+    } catch (error) {
+logger.error(`Error encontrar al token ${error}`);
+    }
+  }
 }
 
 export const usersRepository = new UsersRepository();

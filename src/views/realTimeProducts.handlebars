@@ -16,6 +16,7 @@
           <h3 class="cardTitle">{{this.title}}</h3>
           <h4 class="cardPrice">$ {{this.price}}</h4>
           <h4 class="cardStock">Stock: {{this.stock}}</h4>
+           <p class="cardOwner">Propietario: {{this.ownerEmail}}</p>
           <button onclick="deleteProduct('{{this._id}}')"> Eliminar ✖️</button>
         </div>
       {{/each}}
@@ -32,6 +33,7 @@
   <!-- formulario para agregar productos -->
 
   <form id="formularioAgregarProducto">
+       <input type="hidden" id="userEmail" value="{{userEmail}}">
     <input type="text" id="title" placeholder="Título" required>
     <input type="text" id="description" placeholder="Descripción" required>
     <input type="number" id="price" placeholder="Precio"  required>

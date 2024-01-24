@@ -1,4 +1,3 @@
-
 import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
 
@@ -28,19 +27,3 @@ export const jwtValidator = (req, res, next) => {
     }
 };
 
-
-
-
-/* export const jwtValidator = (req, res, next) => {
-    try {
-        const authHeader = req.get('Authorization');
-        const token = authHeader.split(' ')[1];
-        
-        const userToken = jwt.verify(token, SECRET_JWT_KEY);
-        req.user = userToken;
-        next();
-    } catch (error) {
-        res.json({ error: error.message });
-    }
-}
- */

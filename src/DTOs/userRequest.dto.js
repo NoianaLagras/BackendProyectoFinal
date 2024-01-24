@@ -1,6 +1,7 @@
 
  export default class UserReqDTO {
     constructor(user) {
+      this._id = user._id;
       this.name = `${user.first_name} ${user.last_name}`;
       this.email = user.email;
       this.Usuario = user.Usuario;

@@ -14,8 +14,16 @@ export const compareData = async (data , hashedData)=>{
     return bcrypt.compare(data,hashedData)
 }
 const SECRET_KET_JWT = config.secret_jwt
+
 export const generateToken = (user)=>{
     const token = jwt.sign(user,SECRET_KET_JWT,{ expiresIn:60000 });
     logger.debug(`Token: ${token}`);
     return token ;
 }
+
+
+export const generateResetToken = (email) => {
+    const tokenReset = jwt.sign({email},SECRET_KET_JWT,{ expiresIn:'1h' });
+    logger.debug(`Token de reseteo de password: ${tokenReset}`);
+    return tokenReset ;
+};

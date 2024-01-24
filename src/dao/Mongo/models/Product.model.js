@@ -31,6 +31,16 @@ const productSchema  = new Schema({
   thumbnails:{
     type:[String],
   } ,
+  owner: {
+    type: String,
+    enum: ['Admin', 'Premium'],
+    default: 'Admin'
+  },
+  
+  ownerEmail: {
+    type: String,
+    required: true
+  }
 });
 productSchema.plugin(mongoosePaginate)
 export const productsModel = model('Products', productSchema )

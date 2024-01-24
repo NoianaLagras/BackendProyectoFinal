@@ -24,5 +24,14 @@ export default class UsersManager extends BasicManager {
             throw error;
         }
     }
+    async findByResetToken(token) {
+        try {
+        const user = await UserModel.findOne({ 'resetToken.token': token });
+        return user;
+        } catch (error) {
+          throw error;
+        }
+      }
+      
 
 }

@@ -23,7 +23,7 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['Admin', 'User'],
+        enum: ['Admin', 'User','Premium'],
         default: 'User'
     },
     age: {
@@ -38,7 +38,12 @@ const UserSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Orders'
         }],
-        default:[]}
+        default:[]
+    },
+    resetToken: {
+            token: String,
+            expiration: Date,
+          },
 });
 
 export const UserModel = model('Users', UserSchema);
