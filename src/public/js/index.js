@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code');
   const stockInput = document.getElementById('stock');
   const thumbnailsInput = document.getElementById('thumbnails');
-  const userEmailInput = document.getElementById('userEmail'); // Nuevo campo agregado
+  const userEmailInput = document.getElementById('userEmail'); 
+  const userRoleInput = document.getElementById('userRole')
 
   formularioAgregarProducto.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stock: parseInt(stockInput.value),
       thumbnails: thumbnailsInput.value,
       ownerEmail: userEmailInput.value, 
+      owner: userRoleInput.value,
     };
 
     // Agregar producto
@@ -63,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <h3 class="cardTitle">${product.title}</h3>
         <h4 class="cardPrice">$${product.price}</h4>
         <h4 class="cardStock">Stock: ${product.stock}</h4>
-        <p class="cardOwner">Propietario: ${product.owner}, Correo electrónico: ${product.ownerEmail}</p>
+        <p class="cardOwner">Correo electrónico: ${product.ownerEmail}</p>
         <button data-product-id="${product._id}" onclick="deleteProduct('${product._id}')">Eliminar✖️</button>
       `;
 

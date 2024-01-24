@@ -40,10 +40,11 @@ viewsRouter.get('/', async (req, res) => {
     });
 
   } catch (error) {
-    logger.error(error)
+    logger.error(`Error: ${error}`)
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
+
 
 viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMiddleware), async (req, res) => {
   try {
@@ -53,25 +54,32 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       limit: limit,
     });
 
+    const userRole = req.user.role; 
+
     const productObject = result.map(doc => {
       const productData = doc.toObject();
 
-      if (req.user.email !== config.admin_email) {
-        productData.owner = 'Premium';
+      if (userRole === 'Admin' || userRole === 'Premium') {
+        productData.owner = userRole;
       } else {
-        productData.owner = 'Admin';
+         productData.owner = 'Admin';
       }
+
       productData.ownerEmail = req.user.email;
 
       return productData;
     });
- res.render('realTimeProducts', {
+
+    res.render('realTimeProducts', {
       productList: productObject,
-      userEmail: req.user.email, });
+      userEmail: req.user.email,
+      userRole: userRole,
+    });
   } catch (error) {
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
+
 
 
 
@@ -207,7 +215,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     logger.info('Correo electrónico enviado');
 
   } catch (error) {
-    logger.error(error);
+    logger.error(`Error: ${error}`);
     res.redirect('/login');
   }
 });

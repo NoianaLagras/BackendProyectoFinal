@@ -44,16 +44,7 @@ class UsersController {
     })(req, res, next);
   }
 
-  async githubCallback(req, res) {
-    try {
-      const { Usuario, email, role, cartId , _id } = req.user;
-      const token = generateToken({ Usuario, email, role, cartId , _id });
-      res.cookie('token', token, { maxAge: 120000, httpOnly: true });
-      res.redirect('/api/products');
-    } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.GITHUB_CALLBACK_ERROR, 500, errorName.GITHUB_CALLBACK_ERROR));
-    }
-  }
+
   
   async signout(req, res) {
     res.clearCookie('token');
@@ -112,7 +103,16 @@ class UsersController {
 }
 
 
-  
+  async githubCallback(req, res) {
+    try {
+      const { Usuario, email, role, cartId , _id } = req.user;
+      const token = generateToken({ Usuario, email, role, cartId , _id });
+      res.cookie('token', token, { maxAge: 120000, httpOnly: true });
+      res.redirect('/api/products');
+    } catch (error) {
+      handleErrors(res, customError.generateError(errorMessage.GITHUB_CALLBACK_ERROR, 500, errorName.GITHUB_CALLBACK_ERROR));
+    }
+  }
 
   async githubAuth(req, res) {
     passport.authenticate('github', {
@@ -120,7 +120,7 @@ class UsersController {
       session: false,
     })(req, res);
   }
-
+  
   async getCurrentUser(req, res) {
     try {
       const userResponseDTO = new UserResDTO(req.user);

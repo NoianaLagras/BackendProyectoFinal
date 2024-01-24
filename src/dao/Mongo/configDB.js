@@ -5,4 +5,4 @@ const URI = config.mongo_uri
 mongoose
 .connect(URI)
 .then(()=>logger.info("Conectado a base de datos"))
-.catch((error)=> logger.error(error))
+.catch((error)=> logger.error(`Error: ${error}`))
