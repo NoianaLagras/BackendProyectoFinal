@@ -16,6 +16,9 @@ h2{
 .logo{
     width: 100px;
 }
+.cardOwner{
+  display: none;
+}
 
   .container {
     display: flex;

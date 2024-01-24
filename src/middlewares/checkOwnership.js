@@ -11,7 +11,7 @@ export const checkOwnership = async (req, res, next) => {
         return res.status(404).json({ error: 'Producto no encontrado.' });
       }
 
-      if (role === 'Premium' && email !== product.ownerEmail) {
+      if (role === 'Premium' && email === product.ownerEmail) {
         return res.status(403).json({ error: 'No tienes permisos para esta acción.' });
       }
   

@@ -1,15 +1,42 @@
-// Cliente
-const socketClient = io();
-
-// Borrar producto
-function deleteProduct(id) {
+ 
+ // Cliente
+ const socketClient = io();
+ function deleteProduct(id) {
   const productId = id;
-  socketClient.emit('deleteProduct', productId);
-}
+  const userEmailInput = document.getElementById('userEmail');
+  const userRoleInput = document.getElementById('userRole');
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Campos del formulario
-  const formularioAgregarProducto = document.getElementById('formularioAgregarProducto');
+
+  const userEmail = userEmailInput.value.trim();
+  const userRole = userRoleInput.value.trim();
+
+  if (!userEmail || !userRole) {
+    console.error('User email and role are required.');
+    return;
+  }
+ console.log('User email:', userEmail);
+  console.log('User role:', userRole);
+
+ socketClient.emit('deleteProduct', { productId, userEmail, userRole });
+}
+/*
+// Borrar producto
+/*  function deleteProduct(id) {
+  const productId = id;
+
+   const userRole = document.getElementById('userRole').value;
+  const userEmail = document.getElementById('userEmail').value;
+
+  if ((userRole === 'Admin') || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+    socketClient.emit('deleteProduct', productId);
+  } else {
+    alert('No tienes permisos para eliminar este producto.');
+  } }
+   */
+  document.addEventListener('DOMContentLoaded', () => {
+
+  // Campos del form
+const formularioAgregarProducto = document.getElementById('formularioAgregarProducto');
   const titleInput = document.getElementById('title');
   const descriptionInput = document.getElementById('description');
   const priceInput = document.getElementById('price');
@@ -17,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code');
   const stockInput = document.getElementById('stock');
   const thumbnailsInput = document.getElementById('thumbnails');
-  const userEmailInput = document.getElementById('userEmail'); 
-  const userRoleInput = document.getElementById('userRole')
+  const userRoleInput =  document.getElementById('userRole');
+  const userEmailInput =  document.getElementById('userEmail');
 
   formularioAgregarProducto.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -30,9 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
       category: categoryInput.value,
       code: codeInput.value,
       stock: parseInt(stockInput.value),
-      thumbnails: thumbnailsInput.value,
-      ownerEmail: userEmailInput.value, 
+      thumbnails: thumbnailsInput.value, 
       owner: userRoleInput.value,
+      ownerEmail:userEmailInput.value,
+      
     };
 
     // Agregar producto
@@ -47,29 +75,33 @@ document.addEventListener('DOMContentLoaded', () => {
     stockInput.value = '';
     thumbnailsInput.value = '';
   });
-
-  socketClient.on('actualizarProductos', (productos) => {
+   
+    socketClient.on('actualizarProductos', (productos) => {
     actualizarInterfaz(productos);
   });
 
   function actualizarInterfaz(productList) {
     const container = document.querySelector('.container');
     container.innerHTML = '';
-
+  
     productList.forEach((product) => {
       const card = document.createElement('div');
       card.classList.add('cards');
-
+  
       card.innerHTML = `
         <img src="${product.thumbnails}" alt="Imagen del producto" class="productImage">
         <h3 class="cardTitle">${product.title}</h3>
         <h4 class="cardPrice">$${product.price}</h4>
         <h4 class="cardStock">Stock: ${product.stock}</h4>
-        <p class="cardOwner">Correo electrónico: ${product.ownerEmail}</p>
+        <p class="cardOwnerr">Correo electrónico: ${product.ownerEmail}</p>
         <button data-product-id="${product._id}" onclick="deleteProduct('${product._id}')">Eliminar✖️</button>
       `;
-
+  
       container.appendChild(card);
     });
   }
+  
 });
+
+
+

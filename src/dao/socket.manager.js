@@ -3,7 +3,8 @@
 import { productRepository } from "../repositories/products.repository.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { logger } from "../config/logger.js";
-
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
 class SocketManager {
   constructor(socketServer) {
     this.socketServer = socketServer;
@@ -40,8 +41,43 @@ class SocketManager {
       logger.error(`Error al agregar el producto: ${error.message}`);
     }
   }
+  async handleDeleteProduct(data) {
+    try {
+      const { productId, userEmail, userRole } = data;
+      if (!productId || !userEmail || !userRole) {
+        logger.warning('Id de products, email , y rol requerido.');
+        return;
+      }
+  
+      const product = await productRepository.findById(productId);
+  
+      if (!product) {
+        logger.warning('El producto no se encontró para eliminar.');
+        return;
+      }
 
-  async handleDeleteProduct(id) {
+      if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+        const result = await productRepository.deleteOne({ _id: new ObjectId(productId) });
+  
+        if (result) {
+
+          const productosActualizados = await productRepository.findAllCustom({ limit: 100 });
+          const productObject = productosActualizados.result.map(doc => doc.toObject());
+          this.socketServer.emit('actualizarProductos', productObject);
+        } else {
+          logger.warning('El producto no se encontró para eliminar.');
+        }
+      } else {
+        logger.warning('No tienes permisos para borrar este producto.');
+      }
+    } catch (error) {
+      logger.error(`Error al eliminar: ${error.message}`);
+    }
+  }
+  
+  
+
+ /*  async handleDeleteProduct(id) {
     try {
       const result = await productRepository.deleteOne(id);
   
@@ -55,7 +91,9 @@ class SocketManager {
     } catch (error) {
       logger.error(`Error al eliminar: ${error.message}`);
     }
-  }
+  } 
+  */
+  
   
 
   async handleAddMessage(data) {

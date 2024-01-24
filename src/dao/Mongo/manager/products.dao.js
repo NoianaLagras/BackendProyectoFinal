@@ -22,7 +22,7 @@ export default class ProductManager extends BasicManager {
             } else if (availability === 'outOfStock') {
               filter.stock = 0;
             }
-        
+
             const sortOptions = {};
         
             if (sort) {

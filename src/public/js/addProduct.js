@@ -1,3 +1,4 @@
+
 document.querySelector('.botonDetail').addEventListener('click', function() {
     const productId = this.getAttribute('data-product');
     const cartId = this.getAttribute('data-cart');
@@ -6,10 +7,11 @@ document.querySelector('.botonDetail').addEventListener('click', function() {
     const maxStock = parseInt(quantityInput.getAttribute('max'), 10);
 
     if (quantity > maxStock) {
+        // Más del stock
         showAlert('Error: La cantidad excede el stock disponible.', 'alert-danger');
     } else {
         addProductToCart(cartId, productId, quantity);
-    }
+        }
 });
 
 function showAlert(message, className) {
@@ -21,7 +23,7 @@ function showAlert(message, className) {
     const container = document.querySelector('.detalle');
 
     container.insertBefore(alertDiv, container.firstChild);
-
+    // Tiempo del alert
     setTimeout(() => {
         alertDiv.remove();
     }, 10000);
@@ -36,15 +38,14 @@ function addProductToCart(cartId, productId, quantity) {
         body: JSON.stringify({ quantity: quantity })
     })
     .then(response => {
-        console.log(response);
         if (response.ok) {
-            showAlert('Producto agregado al carrito exitosamente.', 'alert-success');
+            showAlert('Producto agregado al carrito exitosamente.','alert-success');
         } else if (response.status === 403) {
             showAlert('No tienes permisos para esta acción.', 'alert-warning');
         } else if (response.status === 400) {
             showAlert('Error: La cantidad excede el stock disponible.', 'alert-danger');
         } else {
-            showAlert('Error al agregar producto: ' , 'alert-danger');
+            showAlert('Error al agregar producto: ' + response.status, 'alert-danger');
         }
     })
     .catch(error => {

@@ -49,12 +49,13 @@ viewsRouter.get('/', async (req, res) => {
 viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMiddleware), async (req, res) => {
   try {
     const limit = 100;
-
+    const userRole = req.user.role;
+    const user = req.user;
     const { result } = await productRepository.findAllCustom({
       limit: limit,
     });
 
-    const userRole = req.user.role; 
+    
 
     const productObject = result.map(doc => {
       const productData = doc.toObject();
@@ -62,23 +63,25 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       if (userRole === 'Admin' || userRole === 'Premium') {
         productData.owner = userRole;
       } else {
-         productData.owner = 'Admin';
+        productData.owner = 'Admin';
       }
 
-      productData.ownerEmail = req.user.email;
+      productData.ownerEmail = user.email;
 
       return productData;
     });
 
     res.render('realTimeProducts', {
       productList: productObject,
-      userEmail: req.user.email,
+      userEmail: user.email,
       userRole: userRole,
     });
   } catch (error) {
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
+
+
 
 
 
