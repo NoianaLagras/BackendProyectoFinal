@@ -14,8 +14,7 @@
     console.error('User email and role are required.');
     return;
   }
- console.log('User email:', userEmail);
-  console.log('User role:', userRole);
+
 
  socketClient.emit('deleteProduct', { productId, userEmail, userRole });
 }

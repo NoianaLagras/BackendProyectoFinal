@@ -57,11 +57,13 @@ class ProductController {
       if (isUpdated) {
         res.status(200).json({ message: 'Producto actualizado correctamente' });
       } else {
-        handleErrors(res, customError.generateError(errorMessage.UPDATED_PRODUCTS, 404, errorName.UPDATED_PRODUCTS));
+        handleErrors(res, customError.generateError(errorMessage.UPDATED_PRODUCTS, 400, errorName.UPDATED_PRODUCTS));
       }
     } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.UPDATE_PRODUCT_ERROR, 400, errorName.UPDATE_PRODUCT_ERROR));
-    }
+      console.error("Error al actualizar el producto:", error);
+      handleErrors(res, customError.generateError(errorMessage.UPDATE_PRODUCT_ERROR,500, errorName.UPDATE_PRODUCT_ERROR));
+   }
+   
   }
 
   async deleteProductById(req, res) {
@@ -76,7 +78,7 @@ class ProductController {
         handleErrors(res, customError.generateError(errorMessage.PRODUCT_NOT_FOUND, 404, errorName.PRODUCT_NOT_FOUND));
       }
     } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.DELETE_PRODUCT_ERROR, 400, errorName.DELETE_PRODUCT_ERROR));
+      handleErrors(res, customError.generateError(errorMessage.DELETE_PRODUCT_ERROR, 500, errorName.DELETE_PRODUCT_ERROR));
     }
   }
 }

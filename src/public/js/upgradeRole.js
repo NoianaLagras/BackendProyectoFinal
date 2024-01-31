@@ -33,7 +33,6 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
             body: `newRole=${selectedRole}&userId=${userId}`,
         });
 
-        console.log('Respuesta del servidor:', response);
 
         if (response.ok) {
             try {

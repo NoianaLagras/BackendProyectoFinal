@@ -56,13 +56,14 @@ class CartsController {
 
   async removeProductFromCart(req, res) {
     try {
-      const { idCart, idProduct } = req.params;
-      const result = await cartsService.removeProductFromCart(idCart, idProduct);
-      res.status(result.updatedCart ? 200 : 404).json(result);
+        const { idCart, idProduct } = req.params;
+        const result = await cartsService.removeProductFromCart(idCart, idProduct);
+        res.status(result.updatedCart ? 204 : 404).json(result);
     } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART));
+       console.error('Error in removeProductFromCart repository:', error);
+        handleErrors(res, customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART));
     }
-  }
+}
 
   async updateCart(req, res) {
     try {
@@ -71,20 +72,23 @@ class CartsController {
       const result = await cartsService.updateCart(idCart, updatedProducts);
       res.status(result ? 200 : 404).json(result);
     } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.UPDATED_CART, 500, errorName.UPDATED_CART));
+      handleErrors(res, customError.generateError(errorMessage.UPDATED_CART, 400, errorName.UPDATED_CART));
     }
   }
 
   async updateProductQuantity(req, res) {
     try {
       const { idCart, idProduct } = req.params;
-      const { quantity } = req.body;
+      const  {quantity}  = req.body;
+
+  
       const result = await cartsService.updateProductQuantity(idCart, idProduct, quantity);
       res.status(result ? 200 : 404).json(result);
     } catch (error) {
-      handleErrors(res, customError.generateError(errorMessage.INVALID_QUANTITY, 500, errorName.INVALID_QUANTITY));
+      handleErrors(res, customError.generateError(errorMessage.INVALID_QUANTITY, 400, errorName.INVALID_QUANTITY));
     }
   }
+  
 }
 
 export const cartsController = new CartsController();

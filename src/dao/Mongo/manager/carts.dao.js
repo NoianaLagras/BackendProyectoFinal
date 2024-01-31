@@ -40,13 +40,17 @@ export default class CartsManager extends BasicManager {
 
 
   async removeProductFromCart(idCart, idProduct) {
+    try {
+      
+    
     const cart = await this.findById(idCart);
     if (!cart) {
       return null;
     }
+    
     const productIndex = cart.products.findIndex(
       (p) => p.product.toString() === idProduct
-    );
+  );
     if (productIndex === -1) {
       return null;
     } else {
@@ -54,6 +58,9 @@ export default class CartsManager extends BasicManager {
       await cart.save();
       return cart;
     }
+  } catch (error) {
+    throw error;
+  }
   }
 
   async updateCart(cartId, updatedProducts) {
@@ -62,13 +69,16 @@ export default class CartsManager extends BasicManager {
       if (!cart) {
         return null;
       }
-      cart.products = updatedProducts;
+     cart.products = updatedProducts.products;
+      
       const updatedCart = await cart.save();
       return updatedCart;
     } catch (error) {
       throw error;
     }
   }
+  
+  
 
   async updateProductQuantity(cartId, productId, quantity) {
     try {
@@ -76,19 +86,26 @@ export default class CartsManager extends BasicManager {
       if (!cart) {
         return null;
       }
+  
       const productIndex = cart.products.findIndex(
-        (p) => p.product.toString() === productId
+        (p) => p.product._id.toString() === productId
       );
+
       if (productIndex === -1) {
         return null;
       }
+  
       cart.products[productIndex].quantity = quantity;
       const updatedCart = await cart.save();
+  
       return updatedCart;
     } catch (error) {
       throw error;
     }
   }
+  
+  
+  
 
   async deleteAllProducts(cartId) {
     try {

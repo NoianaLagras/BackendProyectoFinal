@@ -56,7 +56,7 @@ class CartsService {
       const updatedCart = await cartsRepository.deleteAllProducts(idCart);
       return { message: "Se ha vaciado el carrito", updatedCart };
     } catch (error) {
-      throw customError.generateError(errorMessage.REMOVE_ALL_FROM_CART, error.code, errorName.REMOVE_ALL_FROM_CART);
+      throw customError.generateError(errorMessage.REMOVE_ALL_FROM_CART, 500, errorName.REMOVE_ALL_FROM_CART);
     }
   }
 
@@ -66,9 +66,10 @@ class CartsService {
       if (!updatedCart) {
         return { message: errorMessage.MESSAGE_REMOVE };
       }
-      return updatedCart;
+      return  { message: "Se ha eliminado el producto del carrito", updatedCart };
     } catch (error) {
-      throw customError.generateError(errorMessage.REMOVE_FROM_CART, error.code, errorName.REMOVE_FROM_CART);
+      console.error('Error in removeProductFromCart repository:', error);
+      throw customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART);
     }
   }
 
@@ -92,7 +93,7 @@ class CartsService {
       }
       return updatedCart;
     } catch (error) {
-      throw customError.generateError(errorMessage.UPDATED_PRODUCTS, error.code, errorName.UPDATED_PRODUCTS);
+      throw customError.generateError(errorMessage.UPDATED_PRODUCTS, 400, errorName.UPDATED_PRODUCTS);
     }
   }
 

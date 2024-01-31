@@ -28,15 +28,10 @@ class ProductService {
 
   async updateProductById(id, data) {
     try {
-      const result = await productRepository.updatedOne(id, data);
+      return await productRepository.updatedOne(id, data);
 
-      if (result.matchedCount > 0) {
-        return true; 
-      } else {
-        throw customError.generateError(errorMessage.UPDATED_PRODUCTS, null, errorName.UPDATED_PRODUCTS);
-      }
     } catch (error) {
-      throw customError.generateError(errorMessage.UPDATED_PRODUCTS, error.code, errorName.UPDATED_PRODUCTS);
+      throw customError.generateError(errorMessage.UPDATED_PRODUCTS, 400, errorName.UPDATED_PRODUCTS);
     }
   }
 
