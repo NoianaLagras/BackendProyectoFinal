@@ -245,81 +245,69 @@ components:
     Carts:
       type: object
       properties:
-        products:
+        message:
+          type: string
+          example: "Carritos :"
+        carts:
           type: array
           items:
             type: object
             properties:
-              product:
-                type: object
-                properties:
-                  _id: string
-                  title: string
-                  description: string
-                  price: number
-                  category: string
-                  code: string
-                  stock: integer
-                  status: boolean
-                  thumbnails:
-                    type: array
-                    items: string
-                  owner: string
-                  ownerEmail: string
-                  __v: integer
-                example:
-                  _id: "65b1a0c13250bf4167b53ae4"
-                  title: "Funda Kindle"
-                  description: "rosa"
-                  price: 30000
-                  category: "Electronica"
-                  code: "dsrcd"
-                  stock: 52
-                  status: true
-                  thumbnails:
-                    - "data:image/jpeg;base64,/9jf//Z"
-                  owner: "Admin"
-                  ownerEmail: "adminCoder@coder.com"
-                  __v: 0
-              quantity:
-                type: integer
-                example: 1
-      example:
-        message: "Carritos :"
-        carts:
-          - _id: "65b978b691e768c747da7ee6"
-            products:
-              - product:
-                  _id: "65b1a0c13250bf4167b53ae4"
-                  title: "Funda Kindle"
-                  description: "rosa"
-                  price: 30000
-                  category: "Electronica"
-                  code: "dsrcd"
-                  stock: 52
-                  status: true
-                  thumbnails:
-                    - "data:image/jpeg;base64,/9jf//Z"
-                  owner: "Admin"
-                  ownerEmail: "adminCoder@coder.com"
-                  __v: 0
-                quantity: 1
-              - product:
-                  _id: "65b1a14a3250bf4167b53af0"
-                  title: "Samsung A04e"
-                  description: "rosa"
-                  price: 300000
-                  category: "Electronica"
-                  code: "ifyh"
-                  stock: 11
-                  status: true
-                  thumbnails:
-                    - "https://multipoint.com.ar/Image/0/750_750-181.jpg"
-                  owner: "Admin"
-                  ownerEmail: "adminCoder@coder.com"
-                  __v: 0
-                quantity: 1
-            __v: 5
-          - _id: "65b978de91e768c747da7f01"
-            products: []
-            __v: 0
+              _id:
+                type: string
+              products:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product:
+                      type: object
+                      properties:
+                        _id: 
+                          type: string
+                        title: 
+                          type: string
+                        description: 
+                          type: string
+                        price: 
+                          type: number
+                        category: 
+                          type: string
+                        code: 
+                          type: string
+                        stock: 
+                          type: integer
+                        status: 
+                          type: boolean
+                        thumbnails:
+                          type: array
+                          items: 
+                            type: string
+                        owner: 
+                          type: string
+                        ownerEmail: 
+                          type: string
+                        __v: 
+                          type: integer
+                      example:
+                        _id: "65b1a0c13250bf4167b53ae4"
+                        title: "Funda Kindle"
+                        description: "rosa"
+                        price: 30000
+                        category: "Electronica"
+                        code: "dsrcd"
+                        stock: 52
+                        status: true
+                        thumbnails:
+                          - "data:image/jpeg;base64,/9jf//Z"
+                        owner: "Admin"
+                        ownerEmail: "adminCoder@coder.com"
+                        __v: 0
+                    quantity:
+                      type: integer
+                      example: 1
+                  __v:
+                    type: integer
+            __v:
+              type: integer
+

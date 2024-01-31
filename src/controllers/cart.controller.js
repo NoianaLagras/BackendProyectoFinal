@@ -54,15 +54,16 @@ class CartsController {
     }
   }
 
-  async removeProductFromCart(req, res) {
-    try {
-        const { idCart, idProduct } = req.params;
-        const result = await cartsService.removeProductFromCart(idCart, idProduct);
-        res.status(result.updatedCart ? 204 : 404).json(result);
-    } catch (error) {
-       console.error('Error in removeProductFromCart repository:', error);
-        handleErrors(res, customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART));
-    }
+async removeProductFromCart(req, res) {
+  try {
+      const { idCart, idProduct } = req.params;
+
+      const result = await cartsService.removeProductFromCart(idCart, idProduct);
+
+      res.status(200).json(result);
+  } catch (error) {
+      handleErrors(res, customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART));
+  }
 }
 
   async updateCart(req, res) {

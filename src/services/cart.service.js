@@ -60,18 +60,21 @@ class CartsService {
     }
   }
 
-  async removeProductFromCart(idCart, idProduct) {
-    try {
+async removeProductFromCart(idCart, idProduct) {
+  try {
+      
       const updatedCart = await cartsRepository.removeProductFromCart(idCart, idProduct);
+      
       if (!updatedCart) {
         return { message: errorMessage.MESSAGE_REMOVE };
+
       }
       return  { message: "Se ha eliminado el producto del carrito", updatedCart };
-    } catch (error) {
-      console.error('Error in removeProductFromCart repository:', error);
+  } catch (error) {
       throw customError.generateError(errorMessage.REMOVE_FROM_CART, 500, errorName.REMOVE_FROM_CART);
-    }
   }
+}
+
 
   async updateCart(idCart, updatedProducts) {
     try {

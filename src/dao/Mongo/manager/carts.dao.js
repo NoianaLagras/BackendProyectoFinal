@@ -39,29 +39,29 @@ export default class CartsManager extends BasicManager {
 }
 
 
-  async removeProductFromCart(idCart, idProduct) {
-    try {
+async removeProductFromCart(idCart, idProduct) {
+  try { 
+      const cart = await this.findById(idCart);
+      if (!cart) {
+          return null;
+      }
       
-    
-    const cart = await this.findById(idCart);
-    if (!cart) {
-      return null;
-    }
-    
-    const productIndex = cart.products.findIndex(
-      (p) => p.product.toString() === idProduct
-  );
-    if (productIndex === -1) {
-      return null;
-    } else {
-      cart.products.splice(productIndex, 1);
-      await cart.save();
-      return cart;
-    }
+      const productIndex = cart.products.findIndex(
+        (p) => p.product._id.toString() === idProduct
+      );
+      if (productIndex === -1) {
+          return null;
+      } else {
+          cart.products.splice(productIndex, 1);
+          await cart.save();
+          
+          return cart;
+      }
   } catch (error) {
-    throw error;
+      throw error;
   }
-  }
+}
+
 
   async updateCart(cartId, updatedProducts) {
     try {
