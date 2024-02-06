@@ -58,8 +58,8 @@ class UsersController {
       const user = await usersService.findByEmail(email);
 
       if (!user) {
-        return handleErrors(res, customError.generateError(errorMessage.EMAIL_NOT_FOUND, 404, errorName.EMAIL_NOT_FOUND));
-      }
+        return res.status(404).json({ message: 'Correo electrónico no encontrado en la base de datos' });
+    }
 
       const resetToken = generateResetToken(email);
       user.resetToken = {
@@ -75,32 +75,34 @@ class UsersController {
       handleErrors(res, customError.generateError(errorMessage.RESTORE_ERROR, 500, errorName.RESTORE_ERROR));
     }
   }
-
   async restorePassword(req, res) {
     const { newPassword } = req.body;
     const token = req.params.token;
-  
+
     try {
         const user = await usersService.findByResetToken(token.toString());
+
         if (!user || !user.resetToken || user.resetToken.expiration < new Date()) {
             return res.redirect('/restore');
         }
-  
+
         const isSamePassword = await compareData(newPassword, user.password);
+
         if (isSamePassword) {
-            return res.status(400).json({ error: 'No puedes restablecer la contraseña con la misma contraseña actual.' });
+            return res.status(400).json({ message: 'No puedes restablecer la contraseña con la misma contraseña actual.' });
         }
 
         const hashedPassword = await hashData(newPassword);
         user.password = hashedPassword;
         user.resetToken = null;
         await user.save();
-  
-       return res.status(200).json({ success: 'Contraseña restablecida con éxito.' });
+
+        return res.status(200).json({ success: 'Contraseña restablecida con éxito.' });
     } catch (error) {
         return res.status(500).json({ error: 'Error durante el restablecimiento de la contraseña.' });
     }
 }
+
 
 
   async githubCallback(req, res) {

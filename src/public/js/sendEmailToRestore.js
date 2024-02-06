@@ -26,8 +26,40 @@ document.getElementById('restoreForm').addEventListener('submit', function (even
         body: JSON.stringify({ email }),
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al enviar el formulario');
+        if (response.status === 404) {
+            return response.json().then(data => {
+                showAlert(data.message, 'alert-warning');
+            });
+        }
+        return response.json().then(data => {
+            showAlert(data.message, 'alert-success');
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        showAlert('Error al enviar el formulario.', 'alert-danger');
+    });
+});
+
+
+/* 
+document.getElementById('restoreForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+
+    fetch('http://localhost:8080/api/sessions/restore', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+    })
+    .then(response => {
+        if (response.status === 404) {
+            return response.json().then(data => {
+                showAlert(data.message, 'alert-warning');
+            });
         }
         return response.json();
     })
@@ -36,6 +68,7 @@ document.getElementById('restoreForm').addEventListener('submit', function (even
     })
     .catch(error => {
         console.error('Error:', error.message);
-        showAlert('Error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.', 'alert-danger');
+        showAlert('Error al enviar el formulario.', 'alert-danger');
     });
 });
+ */
