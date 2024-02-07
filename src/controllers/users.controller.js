@@ -89,7 +89,7 @@ class UsersController {
         const isSamePassword = await compareData(newPassword, user.password);
 
         if (isSamePassword) {
-            return res.status(400).json({ message: 'No puedes restablecer la contraseña con la misma contraseña actual.' });
+            return res.status(400).json({ message: 'No puedes restablecer la nueva contraseña con tu contraseña actual.' });
         }
 
         const hashedPassword = await hashData(newPassword);
