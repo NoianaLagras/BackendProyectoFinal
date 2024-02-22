@@ -509,3 +509,7 @@ background-color: #282727;
 .purchased{
   padding: 50px;
 }
+.multerTitle{
+  display: block;
+  margin: 20px auto;
+}

@@ -55,7 +55,7 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       limit: limit,
     });
 
-    
+    //const productThumbnails = result.some(product => !product.thumbnails.startsWith('https'));
 
     const productObject = result.map(doc => {
       const productData = doc.toObject();
@@ -67,7 +67,6 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       }
 
       productData.ownerEmail = user.email;
-
       return productData;
     });
 
@@ -75,6 +74,7 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       productList: productObject,
       userEmail: user.email,
       userRole: userRole,
+    //  productThumbnails: productThumbnails
     });
   } catch (error) {
     res.status(500).json({ error: 'Error al cargar la vista.' });
