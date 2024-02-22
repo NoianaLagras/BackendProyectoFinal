@@ -158,8 +158,19 @@ hacer fetch asi salta alerta si falta producto ¨? en avatar seria profile
         <h1>{{user.Usuario}}</h1>
         <h6>{{user.email}}</h6>
         <p>({{user.role}})</p>
+        
     </div>
-
+        <div class="user-docsDto">
+         {{#if userInfoDTO.dni}}
+        <p>DNI: {{userInfoDTO.dni.reference}}</p>
+        {{/if}}
+        {{#if userInfoDTO.address}}
+        <p>Address Reference: {{userInfoDTO.address.reference}}</p>
+        {{/if}}
+        {{#if userInfoDTO.bank}}
+        <p>Bank Reference: {{userInfoDTO.bank.reference}}</p>
+        {{/if}}
+         </div>
     <form action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data" class="document-form">
     <div class="form-group">
         <label for="dni">Documento DNI:</label>

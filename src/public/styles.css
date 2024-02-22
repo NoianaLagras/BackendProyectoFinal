@@ -47,8 +47,13 @@ body {
 .user-info {
     text-align: center;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
-
+.user-docsDto{
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
 .document-form {
     margin-top: 20px;
 }

@@ -11,11 +11,10 @@ import { cartsRepository } from "../repositories/cart.repository.js";
 import { productRepository } from "../repositories/products.repository.js";
 import { transport } from "../config/nodemailer.js";
 import { generateProduct} from "../faker.js";
-import config from "../config/config.js";
-import { UsersManager } from "../dao/factory.js";
 import { usersRepository } from "../repositories/users.repository.js";
-import { usersController } from "../controllers/users.controller.js";
+
 import { usersService } from "../services/users.service.js";
+import  { DocumentInfo ,UserInfoDTO} from "../DTOs/userInfo.dto.js";
 const adminAuthMiddleware = ['Admin']
 const adminPremiumMiddleware=['Admin', 'Premium']
 const userAuthMiddleware = ['Admin', 'User','Premium']
@@ -102,10 +101,22 @@ viewsRouter.get('/api/users/premium/:uid', jwtValidator, authMiddleware(userAuth
 viewsRouter.get('/usersInfo/:uid', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
   const uid = req.params.uid;
   const user = await usersRepository.findById(uid);
+
+  const dniDocument = user.documents.find(doc => doc.name === 'dni');
+  const addressDocument = user.documents.find(doc => doc.name === 'address');
+  const bankDocument = user.documents.find(doc => doc.name === 'bank');
+
+  const dni = dniDocument ? new DocumentInfo('dni', dniDocument.reference, dniDocument._id) : null;
+  const address = addressDocument ? new DocumentInfo('address', addressDocument.reference, addressDocument._id) : null;
+  const bank = bankDocument ? new DocumentInfo('bank', bankDocument.reference, bankDocument._id) : null;
+
+ const userInfoDTO = new UserInfoDTO(dni, address, bank);
+
   const isUrl = user.avatar.startsWith("http");
-  res.render('documents', {user , isUrl})
-  ;}) 
-  // if message ? y hacer front ?
+
+  res.render('documents', { user, isUrl, userInfoDTO });
+});
+  // if message ? ?
 
 viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
