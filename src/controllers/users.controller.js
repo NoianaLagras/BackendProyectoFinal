@@ -207,31 +207,33 @@ async signout(req, res) {
 
 
 
+
 async uploadDocuments(req, res) {
   const id = req.params.id;
   upload.fields([
-    { name: 'dni', maxCount: 1 },
-    { name: 'address', maxCount: 1 },
-    { name: 'bank', maxCount: 1 }
+      { name: 'dni', maxCount: 1 },
+      { name: 'address', maxCount: 1 },
+      { name: 'bank', maxCount: 1 }
   ])(req, res, async (err) => {
-    if (err) {
+      if (err) {
+          return res.status(500).json({ error: err.message });
+      }
 
-      return res.status(500).json({ error: err.message });
-    }
+      try {
+          const { dni, address, bank } = req.files;
 
-    try {
-      const { dni, address, bank } = req.files;
+          const response = await usersService.saveUserDocs(id, { dni, address, bank });
 
-
-      const response = await usersService.saveUserDocs(id, { dni, address, bank });
-
-      res.status(200).json({ message: 'Documentos actualizados con éxito', response });
-    } catch (error) {
-      res.status(error.code || 500).json({ error: error.message });
-    }
+          res.status(200).json({ message: 'Documentos actualizados con éxito', response });
+      } catch (error) {
+          if (!(error.code === 400 && error.message.includes('Missing documents'))) {
+              res.status(error.code || 500).json({ error: error.message });
+          } else {
+              res.status(400).json({ error: error.message });
+          }
+      }
   });
 }
-
 
 async updateAvatar(req, res) { 
   const uid = req.params.uid;

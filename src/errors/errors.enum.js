@@ -74,5 +74,5 @@ export const errorMessage = {
   RESET_TOKEN_NOT_FOUND: 'Reset token not found for password restoration',
   UPDATE_PREMIUM_USER_ERROR: 'Could not update user role',
   UPDATE_USER_ERROR:'Could not update user data',
-  DOCUMENTS_NOT_UPDATED:'Could not save documents'
+  DOCUMENTS_NOT_UPDATED:'Missing documents'
 };

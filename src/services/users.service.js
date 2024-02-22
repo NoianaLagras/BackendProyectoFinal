@@ -36,59 +36,30 @@ throw customError.generateError(errorMessage.RESET_TOKEN_NOT_FOUND, error.code, 
       throw customError.generateError(errorMessage.UPDATE_USER_ERROR, error.code, errorName.UPDATE_USER_ERROR);
     }
   }
+ 
   async saveUserDocs(id, { dni, address, bank }) {
     try {
-      const savedDocuments = await usersRepository.updateOne(id, {
-        documents: [
-          { name: "dni", reference: dni[0].filename },
-          { name: "address", reference: address[0].filename },
-          { name: "bank", reference: bank[0].filename },
-        ]
-      });
-  
-      
-      return savedDocuments;
-    } catch (error) {
-      throw customError.generateError(errorMessage.DOCUMENTS_NOT_UPDATED, error.code, errorName.UPDATE_USER_ERROR);
-    }
-  }
-  
-  /* async saveUserDocs ({id, dni , address , bank}){
-    try {
-      const savedDocuments = await usersRepository.updateOne(id, {
-        documents: [
-            { name: "dni", reference: dni[0].path },
-            { name: "address", reference: address[0].path },
-            { name: "bank", reference: bank[0].path },
-        ]
-    });
+        const documents = [];
 
-      
-return savedDocuments
-    } catch (error) {
-     // console.error('error' + error)
-      throw customError.generateError(errorMessage.DOCUMENTS_NOT_UPDATED, error.code, errorName.UPDATE_USER_ERROR);
-    }
-  } */
+        if (dni && dni.length > 0) {
+            documents.push({ name: "dni", reference: dni[0].filename });
+        }
 
- /*  async saveUserDocs({ id, dni, address, bank }) {
-    try {
-        const savedDocuments = await usersRepository.updateOne(id, {
-            documents: [
-                { name: "dni", reference: dni[0].path },
-                { name: "address", reference: address[0].path },
-                { name: "bank", reference: bank[0].path },
-            ]
-        });
+        if (address && address.length > 0) {
+            documents.push({ name: "address", reference: address[0].filename });
+        }
 
-        console.log("savedDocuments:", savedDocuments);
+        if (bank && bank.length > 0) {
+            documents.push({ name: "bank", reference: bank[0].filename });
+        }
+
+        const savedDocuments = await usersRepository.updateOne(id, { documents });
 
         return savedDocuments;
     } catch (error) {
-        console.error("Error in saveUserDocs:", error);
         throw customError.generateError(errorMessage.DOCUMENTS_NOT_UPDATED, error.code, errorName.UPDATE_USER_ERROR);
     }
-} */
+}
 
 
 
