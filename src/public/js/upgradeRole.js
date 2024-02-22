@@ -33,14 +33,14 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
             body: `newRole=${selectedRole}&userId=${userId}`,
         });
 
-
         if (response.ok) {
             try {
                 const contentType = response.headers.get('content-type');
                 if (contentType && (contentType.includes('application/json') || contentType.includes('text/html'))) {
                     const result = await response.json();
                     console.log('Respuesta JSON:', result);
-                    showAlert('Rol cambiado correctamente, sera redireccionado al login para actualizar su informacion', 'alert-success', 'http://localhost:8080/login');
+
+                    showAlert('Rol cambiado correctamente, sera redireccionado al login para actualizar su información', 'alert-success', 'http://localhost:8080/login');
                 } else {
                     console.error('La respuesta no es JSON válido ni HTML. Tipo de contenido inesperado:', contentType);
                 }
@@ -49,11 +49,12 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
             }
         } else {
             console.error(`Error al cambiar el rol del usuario. Código de estado: ${response.status}`);
-            showAlert('Error al cambiar el rol del usuario.', 'alert-danger');
+
+            const errorMessage = await response.text();
+
+            showAlert(`Error al cambiar el rol del usuario. ${errorMessage}`, 'alert-danger');
         }
     } catch (error) {
-        console.error('Error al procesar la solicitud:', error);
         showAlert('Error al procesar la solicitud.', 'alert-danger');
     }
 });
-

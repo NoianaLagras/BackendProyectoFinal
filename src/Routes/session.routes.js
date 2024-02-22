@@ -22,7 +22,7 @@ sessionRouter.get('/callback', passport.authenticate('github', { session: false 
 // Current 
 sessionRouter.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => usersController.getCurrentUser(req, res));
 //Signout
-sessionRouter.get('/signout', (req, res) => usersController.signout(req, res));
+sessionRouter.get('/signout', passport.authenticate('jwt', { session: false }), (req, res) => usersController.signout(req, res));
 
 /* sessionRouter.post('/users/premium/:uid/update', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
     usersController.updatePremiumUser(req, res);

@@ -12,6 +12,8 @@ export const jwtValidator = (req, res, next) => {
             req.user = null;
             req.authenticated = false;
             req.invalidToken = true;
+            
+
             return next();
         }
 
@@ -23,6 +25,8 @@ export const jwtValidator = (req, res, next) => {
         req.user = null;
         req.authenticated = false;
         req.invalidToken = true;
+        
+        
         next();
     }
 };

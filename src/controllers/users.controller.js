@@ -57,19 +57,25 @@ async login(req, res, next) {
 
 async signout(req, res) {
   try {
-    const userToLogout = req.user;
-    console.log(userToLogout)
-if (userToLogout) {
-        userToLogout.last_connection = new Date();
-      await userToLogout.save();
-    }
-
     res.clearCookie('token');
+
+    const userId = req.user._id;
+
+    if (userId) {
+      const user = await usersService.findById(userId)
+      if (user) {
+        user.last_connection = new Date();
+        await user.save();
+      }
+    }
 
     res.redirect('/login');
   } catch (error) {
-    console.error('error'+ error)}
+    console.error('error: ' + error);
+     res.status(500).send('Error al cerrar sesión');
+  }
 }
+
 
 
 
@@ -162,28 +168,43 @@ if (userToLogout) {
   }
   
   async updatePremiumUser(req, res) {
-    try {
-        const { uid } = req.params;
-        const { newRole } = req.body;
+  try {
+      const { uid } = req.params;
+      const { newRole } = req.body;
 
-        const user = await usersService.findById(uid);
+      const user = await usersService.findById(uid);
 
-        if (!user) {
-            return handleErrors(res, customError.generateError(errorMessage.USER_NOT_FOUND, 404, errorName.USER_NOT_FOUND));
-        }
-        if (!user.documents || user.documents.length < 3) {
-          return res.status(400).json({ error: 'El usuario no ha cargado la documentación completa.' });
-        }
-        //hacerlo por documento ? 
-        user.role = newRole;
-        await user.save();
-        return res.json({ userId: uid, currentRole: user.role });
-        
-    } catch (error) {
-        return handleErrors(res, customError.generateError(errorMessage.UPDATE_PREMIUM_USER_ERROR, 500, errorName.UPDATE_PREMIUM_USER_ERROR));
-    }
-  
+      if (!user) {
+          return handleErrors(res, customError.generateError(errorMessage.USER_NOT_FOUND, 404, errorName.USER_NOT_FOUND));
+      }
+
+      const docs = user.documents;
+      const dni = docs.find((d) => d.name === "dni");
+      const bank = docs.find((d) => d.name === "bank");
+      const address = docs.find((d) => d.name === "address");
+
+      if (!dni) {
+          return res.status(400).json({ error: 'Falta el documento "dni".' });
+      }
+
+      if (!bank) {
+          return res.status(400).json({ error: 'Falta el documento "bank".' });
+      }
+
+      if (!address) {
+          return res.status(400).json({ error: 'Falta el documento "address".' });
+      }
+
+      
+      user.role = newRole;
+      await user.save();
+      return res.json({ userId: uid, currentRole: user.role });
+
+  } catch (error) {
+      return handleErrors(res, customError.generateError(errorMessage.UPDATE_PREMIUM_USER_ERROR, 500, errorName.UPDATE_PREMIUM_USER_ERROR));
+  }
 }
+
 
 
 async uploadDocuments(req, res) {
