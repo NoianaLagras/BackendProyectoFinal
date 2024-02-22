@@ -10,10 +10,11 @@ const productsRouter = Router();
 
 productsRouter.get('/', productController.getAllProducts);
 productsRouter.get('/:pid', productController.getProductById);
-//productsRouter.post('/', productController.createProduct); 
-/* productsRouter.post('/multer',productController.createProduct);
+productsRouter.post('/', productController.createProduct); 
+/* productsRouter.post('/multer',productController.createProductMulter);
  */
-productsRouter.post('/multer', upload.single('thumbnails'), async (req, res) => {
+productsRouter.post('/multer', upload.single('thumbnails'), async (req, res) => { productController.createProductMulter(req,res) })
+/* productsRouter.post('/multer', upload.single('thumbnails'), async (req, res) => {
     try {
       const thumbnails = req.file;
   
@@ -41,7 +42,7 @@ productsRouter.post('/multer', upload.single('thumbnails'), async (req, res) => 
       console.error('Error in createProduct controller:', error);
       handleErrors(res, customError.generateError(errorMessage.CREATE_PRODUCT_ERROR, 400, errorName.CREATE_PRODUCT_ERROR));
     }
-  });
+  }); */
 productsRouter.put('/:pid', productController.updateProductById);
 productsRouter.delete('/:pid', productController.deleteProductById);
 
