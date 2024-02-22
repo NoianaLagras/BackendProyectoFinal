@@ -20,8 +20,11 @@ class ProductService {
 
   async createProduct(data) {
     try {
+      console.log('Data received in createProduct:', data);
       return await productRepository.createOne(data);
+      
     } catch (error) {
+      console.error('Error in ProductService createProduct:', error);
       throw customError.generateError(errorMessage.PRODUCT_NOT_FOUND, error.code, errorName.PRODUCT_NOT_FOUND);
     }
   }

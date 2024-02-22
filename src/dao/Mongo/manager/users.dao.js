@@ -5,7 +5,7 @@ export default class UsersManager extends BasicManager {
     constructor() {
         super(UserModel, ''); 
     }
-    //findById y createOne heredados
+    //findById y createOne y updateOne heredados
     async findByEmail(email){
         try{
         const response = await  UserModel.findOne({email});

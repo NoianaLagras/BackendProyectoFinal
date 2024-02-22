@@ -18,20 +18,7 @@
 
  socketClient.emit('deleteProduct', { productId, userEmail, userRole });
 }
-/*
-// Borrar producto
-/*  function deleteProduct(id) {
-  const productId = id;
 
-   const userRole = document.getElementById('userRole').value;
-  const userEmail = document.getElementById('userEmail').value;
-
-  if ((userRole === 'Admin') || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
-    socketClient.emit('deleteProduct', productId);
-  } else {
-    alert('No tienes permisos para eliminar este producto.');
-  } }
-   */
   document.addEventListener('DOMContentLoaded', () => {
 
   // Campos del form
@@ -104,3 +91,17 @@ const formularioAgregarProducto = document.getElementById('formularioAgregarProd
 
 
 
+/*
+// Borrar producto
+/*  function deleteProduct(id) {
+  const productId = id;
+
+   const userRole = document.getElementById('userRole').value;
+  const userEmail = document.getElementById('userEmail').value;
+
+  if ((userRole === 'Admin') || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+    socketClient.emit('deleteProduct', productId);
+  } else {
+    alert('No tienes permisos para eliminar este producto.');
+  } }
+   */

@@ -10,6 +10,7 @@ import UserResDTO from './DTOs/userResponse.dto.js';
 import UserReqDTO from './DTOs/userRequest.dto.js';
 import { cartsRepository } from './repositories/cart.repository.js';
 import { usersRepository } from './repositories/users.repository.js';
+import { faker } from '@faker-js/faker';
 // signup
 passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' },
   async (req, email, password, done) => {
@@ -62,7 +63,8 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email
     }
 
     const userResDTO = new UserResDTO(user);
-    return done(null, userResDTO);
+    //return done(null, userResDTO);
+    return done(null, user);
   } catch (error) {
     done(error);
   }
@@ -95,7 +97,8 @@ passport.use('github', new GithubStrategy({
         email: profile._json.email ,
         password: ' ',
         isGithub:true,
-        cartId: newCart._id
+        cartId: newCart._id,
+        avatar: faker.image.avatar()
     }
     const createUser = await usersRepository.createOne(infoUser)
     

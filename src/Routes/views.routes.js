@@ -101,7 +101,14 @@ viewsRouter.get('/api/users/premium/:uid', jwtValidator, authMiddleware(userAuth
   }
 });
 
-
+//documents
+viewsRouter.get('/usersInfo/:uid', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
+  const uid = req.params.uid;
+  const user = await usersRepository.findById(uid);
+  const isUrl = user.avatar.startsWith("http");
+  res.render('documents', {user , isUrl})
+  ;}) 
+  // if message ? y hacer front ?
 
 viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
@@ -279,5 +286,5 @@ viewsRouter.get('/error', async (req, res) => {
     
   });}) 
 
- 
+
 export default viewsRouter;

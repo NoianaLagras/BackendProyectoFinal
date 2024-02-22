@@ -25,7 +25,7 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
     const userId = formData.get('userId');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/sessions/users/premium/${userId}/update`, {
+        const response = await fetch(`http://localhost:8080/api/users/premium/${userId}/update`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

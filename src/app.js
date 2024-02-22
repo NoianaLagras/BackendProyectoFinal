@@ -31,6 +31,7 @@ import { logger } from "./config/logger.js";
 import loggerRouter from "./Routes/logger.routes.js";
 import { swaggerSetup } from "./config/swagger.js";
 import  swaggerUi  from "swagger-ui-express";
+import usersRouter from "./Routes/users.routes.js";
 
 const app = express();
 const PORT = config.port
@@ -84,8 +85,10 @@ app.set('view engine', 'handlebars');
 app.use('/api/carts', cartsRouter);
 app.use('/', viewsRouter);
 app.use('/api/sessions', sessionRouter)
+app.use('/api/users', usersRouter)
 app.use('/chat', messageRouter);
 app.use('/products', productsRouter);
+
 
 //swagger
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup) )

@@ -33,7 +33,8 @@ export const errorName = {
   GITHUB_AUTH_ERROR: 'GitHub Auth Error',
   GET_CURRENT_USER_ERROR: 'Get Current User Error',
   RESET_TOKEN_NOT_FOUND:'Reset token not found',
-  UPDATE_PREMIUM_USER_ERROR:'User not updated'
+  UPDATE_PREMIUM_USER_ERROR:'User not updated',
+  UPDATE_USER_ERROR:'Documents not updated',
 
 };
 export const errorMessage = {
@@ -72,4 +73,6 @@ export const errorMessage = {
   GET_CURRENT_USER_ERROR: 'Error fetching the current user',
   RESET_TOKEN_NOT_FOUND: 'Reset token not found for password restoration',
   UPDATE_PREMIUM_USER_ERROR: 'Could not update user role',
+  UPDATE_USER_ERROR:'Could not update user data',
+  DOCUMENTS_NOT_UPDATED:'Could not save documents'
 };

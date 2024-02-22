@@ -28,8 +28,9 @@ const productSchema  = new Schema({
     type: Boolean,
     default:true
   } ,
-  thumbnails:{
-    type:[String],
+  thumbnails: {
+    type: [Object],
+    required: true,
   } ,
   owner: {
     type: String,

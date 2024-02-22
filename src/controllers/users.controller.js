@@ -6,6 +6,7 @@ import customError from '../errors/errors.generator.js';
 import { errorMessage, errorName } from '../errors/errors.enum.js';
 import { handleErrors } from '../errors/handle.Errors.js';
 import { sendPasswordResetEmail } from '../config/restorePass.js';
+import upload from '../middlewares/multer.middleware.js';
 
 class UsersController {
   async signup(req, res, next) {
@@ -20,36 +21,59 @@ class UsersController {
     })(req, res, next);
   }
 
-  async login(req, res, next) {
-    passport.authenticate('login', async (err, user, info) => {
+
+
+async login(req, res, next) {
+  passport.authenticate('login', async (err, user, info) => {
       try {
-        if (err || !user) {
-          throw new Error("Error de autenticación");
-        }
-  
-        req.login(user, { session: false }, async (error) => {
-          if (error) {
-            throw new Error("Error de inicio de sesión");
+          if (err || !user) {
+              throw new Error("Error de autenticación");
           }
-  
-          const { Usuario, email, role, cartId, _id } = user;
-          const token = generateToken({ Usuario, email, role, cartId, _id });
-  
-          res.cookie('token', token, { maxAge: 120000, httpOnly: true });
-          res.redirect('/api/products');
+
+          req.login(user, { session: false }, async (error) => {
+            if (error) {
+                throw new Error("Error de inicio de sesión");
+            }
+        
+            const { Usuario, email, role, cartId, _id , last_connection, avatar} = user;
+            
+            user.last_connection = new Date();
+            await user.save();
+        
+            const userResDTO = new UserResDTO(user);
+        
+            const token = generateToken({ Usuario, email, role, cartId, _id, last_connection,avatar});
+        
+            res.cookie('token', token, { maxAge: 120000, httpOnly: true });
+            res.redirect('/api/products');
         });
       } catch (error) {
-        handleErrors(res, customError.generateError(errorMessage.LOGIN_ERROR, 500, errorName.LOGIN_ERROR));
+          handleErrors(res, customError.generateError(errorMessage.LOGIN_ERROR, 500, errorName.LOGIN_ERROR));
       }
-    })(req, res, next);
-  }
+  })(req, res, next);
+}
+//signout 
 
 
-  
-  async signout(req, res) {
+async signout(req, res) {
+  try {
+    const userToLogout = req.user;
+    console.log(userToLogout)
+if (userToLogout) {
+        userToLogout.last_connection = new Date();
+      await userToLogout.save();
+    }
+
     res.clearCookie('token');
+
     res.redirect('/login');
-  }
+  } catch (error) {
+    console.error('error'+ error)}
+}
+
+
+
+
 
 
   async restore(req, res) {
@@ -107,8 +131,12 @@ class UsersController {
 
   async githubCallback(req, res) {
     try {
-      const { Usuario, email, role, cartId , _id } = req.user;
-      const token = generateToken({ Usuario, email, role, cartId , _id });
+      const { Usuario, email, role, cartId , _id, last_connection, avatar } = req.user;
+      const token = generateToken({ Usuario, email, role, cartId , _id, last_connection, avatar });
+      
+      req.user.last_connection = new Date();
+      await req.user.save();
+  
       res.cookie('token', token, { maxAge: 120000, httpOnly: true });
       res.redirect('/api/products');
     } catch (error) {
@@ -143,6 +171,10 @@ class UsersController {
         if (!user) {
             return handleErrors(res, customError.generateError(errorMessage.USER_NOT_FOUND, 404, errorName.USER_NOT_FOUND));
         }
+        if (!user.documents || user.documents.length < 3) {
+          return res.status(400).json({ error: 'El usuario no ha cargado la documentación completa.' });
+        }
+        //hacerlo por documento ? 
         user.role = newRole;
         await user.save();
         return res.json({ userId: uid, currentRole: user.role });
@@ -150,7 +182,57 @@ class UsersController {
     } catch (error) {
         return handleErrors(res, customError.generateError(errorMessage.UPDATE_PREMIUM_USER_ERROR, 500, errorName.UPDATE_PREMIUM_USER_ERROR));
     }
+  
 }
+
+
+async uploadDocuments(req, res) {
+  const id = req.params.id;
+  upload.fields([
+    { name: 'dni', maxCount: 1 },
+    { name: 'address', maxCount: 1 },
+    { name: 'bank', maxCount: 1 }
+  ])(req, res, async (err) => {
+    if (err) {
+
+      return res.status(500).json({ error: err.message });
+    }
+
+    try {
+      const { dni, address, bank } = req.files;
+
+
+      const response = await usersService.saveUserDocs(id, { dni, address, bank });
+
+      res.status(200).json({ message: 'Documentos actualizados con éxito', response });
+    } catch (error) {
+      res.status(error.code || 500).json({ error: error.message });
+    }
+  });
+}
+
+
+async updateAvatar(req, res) { 
+  const uid = req.params.uid;
+console.log('id:'+ uid)
+  upload.single('profile')(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    try {
+      const updatedUserData = {
+        avatar: req.file.filename,
+      };
+      const updatedUser = await usersService.updateUserAvatar(uid, updatedUserData);
+      console.log(updatedUser);
+      res.status(200).json({ message: 'Avatar actualizado con éxito', user: updatedUser });
+
+    } catch (error) {
+      console.error('error' + error);
+      res.status(error.code || 500).json({ error: error.message });
+    }
+  })}; 
 
 }
 

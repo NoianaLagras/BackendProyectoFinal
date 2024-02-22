@@ -8,6 +8,8 @@ export default class UserResDTO {
       this.email = user.email;
       this.role = user.role;
       this.orders = user.orders;
+      this.last_connection= user.last_connection;
+      this.avatar=user.avatar
     }
   }
   

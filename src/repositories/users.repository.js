@@ -42,6 +42,15 @@ class UsersRepository {
 logger.error(`Error encontrar al token ${error}`);
     }
   }
+  
+  async updateOne(id, obj) {
+    try {
+      return await this.dao.updateOne(id, obj);
+    } catch (error) {
+       console.error( 'error'+ error)
+      logger.error(`Error al actualizar usuario ${error}`);
+    }
+  }
 }
 
 export const usersRepository = new UsersRepository();
