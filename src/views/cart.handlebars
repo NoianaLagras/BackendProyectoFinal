@@ -8,7 +8,8 @@
  <div class="cartList">
   {{#each cart.products}}
     <div class="cartProduct">
-      <img src="{{product.thumbnails}}" alt="{{product.title}}" class="CartProductImage">
+      {{!-- <img src="{{product.thumbnails}}" alt="{{product.title}}" class="CartProductImage"> --}}
+      {{renderImage product.thumbnails "CartProductImage"}}
       <div class="CartProductTitle">
         <h2>{{product.title}}</h2>
         <p class="CartProductDescription">Descripción: {{product.description}}</p>

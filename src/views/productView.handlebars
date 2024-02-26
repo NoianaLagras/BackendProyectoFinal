@@ -10,7 +10,9 @@
     {{#if product}}
     <div class='itemDetail'>
         <div class='imgDetail'>
-            <img src="{{product.thumbnails}}" alt="{{product.title}}" class="detailImg">
+            {{!-- <img src="{{product.thumbnails}}" alt="{{product.title}}" class="detailImg">
+         --}}
+          {{renderImage product.thumbnails "detailImg"}}
         </div>
         <div class='detalle'>
             <h1 class='nombreProducto'>{{product.title}}</h1>

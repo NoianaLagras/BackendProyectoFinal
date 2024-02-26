@@ -12,15 +12,10 @@
     {{#if productList.length}}
       {{#each productList}}
         <div class="cards">
-         {{!--  {{#if this.thumbnails}}
-          <img src="/public/docs/products/{{this.thumbnails}}"  alt="Imagen del producto" class="productImage">
-           {{else}}{{/if}} --}}
-         <img src="{{this.thumbnails}}" alt="Imagen del producto" class="productImage">
-         {{!--   {{#ifType this.thumbnails 'string'}}
-  <img src="{{this.thumbnails}}" alt="Imagen del producto" class="productImage">
-{{else}}
-  <img src="/docs/products/{{this.thumbnails}}" alt="Imagen del producto" class="productImage">
-{{/ifType}} --}}
+         
+           {{renderImage this.thumbnails "productImage"}}
+        {{!--  <img src="{{this.thumbnails}}" alt="Imagen del producto" class="productImage">
+         --}}
            /<h3 class="cardTitle">{{this.title}}</h3>
           <h4 class="cardPrice">$ {{this.price}}</h4>
           <h4 class="cardStock">Stock: {{this.stock}}</h4>

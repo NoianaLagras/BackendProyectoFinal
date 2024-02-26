@@ -6,7 +6,8 @@
 <div class="cartList">
 {{#each unavailableProducts}}
 <div class="cartProduct">
-      <img src="{{product.thumbnails}}" alt="{{product.title}}" class="CartProductImage">
+      {{renderImage product.thumbnails "CartProductImage"}}
+          
       <div class="CartProductTitle">
         <h2>{{product.title}}</h2>
         <p class="CartProductDescription">Descripción: {{product.description}}</p>

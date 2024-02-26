@@ -17,7 +17,7 @@
     {{#if productList.length}}
       {{#each productList}}
         <div class="cards">
-          <img src="{{this.thumbnails}}" alt="Imagen del producto" class="productImage">
+          {{renderImage this.thumbnails "productImage"}}
           <h3 class="cardTitle">{{this.title}}</h3>
           <h4 class="cardPrice">$ {{this.price}}</h4>
           <h4 class="cardStock">Stock: {{this.stock}}</h4>

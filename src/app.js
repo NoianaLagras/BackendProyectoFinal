@@ -65,23 +65,32 @@ app.use(passport.initialize());
 
 //handlebars
 const hbs = exphbs.create({
-  extname: 'handlebars',
-  defaultLayout: 'main',
-  handlebars: allowInsecurePrototypeAccess(Handlebars),
-  helpers: {
-    //creacion de helpers
-    ifEqual: function(arg1, arg2, options) {
+    extname: 'handlebars',
+    defaultLayout: 'main',
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
+    helpers: {
+    // Creación de helpers
+      ifEqual: function(arg1, arg2, options) {
       return arg1 === arg2 ? options.fn(this) : options.inverse(this);
-    },
-    /* ifType: function(value, type, options) {
-      if (typeof value === type) {
-        return options.fn(this);
-      } else {
-        return options.inverse(this);
-      }
-    } */
-  }
-});
+        },
+      renderImage: function(thumbnails, customClass) {
+        let html = '';
+        if (Array.isArray(thumbnails)) {
+          thumbnails.forEach((thumbnail) => {
+            if (typeof thumbnail === 'object' && thumbnail.filename) {
+              // si archivo 
+              const localImageUrl = `/docs/products/${thumbnail.filename}`;
+              html += `<img src="${localImageUrl}" alt="Imagen del producto" class="${customClass}">`;
+                } else if (typeof thumbnail === 'string') {
+                  // si url
+                   html += `<img src="${thumbnail}" alt="Imagen del producto" class="${customClass}">`;
+                  }
+                    });
+                      }
+                      return new Handlebars.SafeString(html);
+                    }
+                  }
+                });
 
 app.engine('handlebars', hbs.engine);
 app.set('views', __dirname + '/views');
