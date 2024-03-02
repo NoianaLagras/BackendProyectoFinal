@@ -4,6 +4,13 @@ class UsersRepository {
   constructor() {
     this.dao = new UsersManager();
   }
+  async getUsers(){
+    try {
+      return await this.dao.findAll();
+    } catch (error) {
+      throw error;
+    }
+  }
   async createOne(user){
     try {
       return await this.dao.createOne(user)
@@ -47,8 +54,38 @@ logger.error(`Error encontrar al token ${error}`);
     try {
       return await this.dao.updateOne(id, obj);
     } catch (error) {
-       console.error( 'error'+ error)
+      
       logger.error(`Error al actualizar usuario ${error}`);
+    }
+  }
+
+  async findInactiveUsers(thirtyMinutesAgo){
+    try {
+      return await this.dao.findInactiveUsers(thirtyMinutesAgo);
+    } catch (error) {
+      
+      logger.error(`Error al encontrar users inactivos  ${error}`);
+    }
+  }
+  async deleteInactiveUsers(thirtyMinutesAgo){
+    try {
+      return await this.dao.deleteInactiveUsers(thirtyMinutesAgo);
+    } catch (error) {
+      logger.error(`Error al eliminar users  ${error}`);
+    }
+  }
+  async getDocuments(id){
+    try {
+      return await this.dao.getDocuments(id);
+    } catch (error) {
+      logger.error(`Error al get documents  ${error}`);
+    }
+  }
+  async UpdateOrAddDocument(documents, newDocument){
+    try {
+      return await this.dao.UpdateOrAddDocument(documents, newDocument);
+    } catch (error) {
+      logger.error(`Error al actualizar o agregar docs${error}`);
     }
   }
 }

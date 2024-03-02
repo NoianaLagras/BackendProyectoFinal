@@ -61,16 +61,6 @@ const UserSchema = new Schema({
         type: String,
         //default: faker.image.avatar(),
     },
-    /* ??? avatar: {
-        type: {
-            path: String, // Ruta o nombre del archivo
-            originalName: String, // Nombre original del archivo
-        },
-        default: {
-            path: faker.image.avatar(),
-            originalName: "default-avatar.png",
-        },
-    }, */
 });
 
 export const UserModel = model('Users', UserSchema);

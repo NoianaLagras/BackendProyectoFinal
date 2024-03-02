@@ -35,6 +35,8 @@ export const errorName = {
   RESET_TOKEN_NOT_FOUND:'Reset token not found',
   UPDATE_PREMIUM_USER_ERROR:'User not updated',
   UPDATE_USER_ERROR:'Documents not updated',
+  USERS_NOT_FOUND:'Users not found',
+  DELETE_INACTIVE_USERS_ERROR:'Inactive users not deleted'
 
 };
 export const errorMessage = {
@@ -74,5 +76,8 @@ export const errorMessage = {
   RESET_TOKEN_NOT_FOUND: 'Reset token not found for password restoration',
   UPDATE_PREMIUM_USER_ERROR: 'Could not update user role',
   UPDATE_USER_ERROR:'Could not update user data',
-  DOCUMENTS_NOT_UPDATED:'Missing documents'
+  DOCUMENTS_NOT_UPDATED:'Missing documents',
+  USERS_NOT_FOUND:'No users found',
+  DELETE_INACTIVE_USERS_ERROR:'Usuarios inactivos no eliminados'
+
 };

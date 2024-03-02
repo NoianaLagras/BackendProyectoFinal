@@ -4,7 +4,7 @@ import { logger } from "../config/logger.js";
 //auth
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { jwtValidator } from "../middlewares/jwt.middleware.js";
-import flash from "express-flash";
+
 import { cartsService } from "../services/cart.service.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { cartsRepository } from "../repositories/cart.repository.js";
@@ -15,7 +15,8 @@ import { usersRepository } from "../repositories/users.repository.js";
 
 import { usersService } from "../services/users.service.js";
 import  { DocumentInfo ,UserInfoDTO} from "../DTOs/userInfo.dto.js";
-const adminAuthMiddleware = ['Admin']
+import EmailProductDTO from "../DTOs/emailPurchase.dto.js";
+
 const adminPremiumMiddleware=['Admin', 'Premium']
 const userAuthMiddleware = ['Admin', 'User','Premium']
 
@@ -114,9 +115,8 @@ viewsRouter.get('/usersInfo/:uid', jwtValidator, authMiddleware(userAuthMiddlewa
 
   const isUrl = user.avatar.startsWith("http");
 
-  res.render('documents', { user, isUrl, userInfoDTO });
+  res.render('documents', { user, isUrl, userInfoDTO  });
 });
-  // if message ? ?
 
 viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
@@ -207,12 +207,38 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     const response = await cartsService.purchase(idCart, userEmail, req.user);
 
     if (response.success) {
+      const emailProducts = EmailProductDTO.formatForEmail(response.availableProducts);
+
       res.render('purchased', {
         message: response.message,
-        availableProducts: response.availableProducts,
+        availableProducts: emailProducts,
         total: response.total,
         unavailableProducts: response.unavailableProducts,
       });
+
+      logger.info('purchased', response);
+
+      const emailBody = `
+        Gracias por tu compra. Has adquirido los siguientes productos:
+
+        Productos comprados:
+        ${emailProducts.map(producto => `${producto.title} - Cantidad: ${producto.quantity} - Precio: ${producto.price}`).join('\n')}
+
+        Total:$ ${response.total}
+
+        Productos sin stock: ${response.unavailableProducts.length > 0 ? response.unavailableProducts.join(', ') : 'Ninguno'}
+      `;
+
+      const mailOptions = {
+        from: 'Noi Lagras',
+        to: userEmail,
+        subject: 'Compra en Ecommerce - CoderBackend',
+        text: emailBody,
+      };
+
+      await transport.sendMail(mailOptions);
+      logger.info('Correo electrónico enviado');
+
     } else {
       res.render('purchaseFailed', {
         message: response.message,
@@ -220,24 +246,11 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
       });
     }
 
-    logger.info('purchased', response);
-
-    const mailOptions = {
-      from: 'Noi Lagras',
-      to: userEmail,
-      subject: 'Prueba de email - coderBackend',
-      text: `Productos comprados: ${response.availableProducts}\nProductos sin stock: ${response.unavailableProducts}`
-    };
-
-    await transport.sendMail(mailOptions);
-    logger.info('Correo electrónico enviado');
-
   } catch (error) {
     logger.error(`Error: ${error}`);
     res.redirect('/login');
   }
 });
-
 
 
 //restaurar

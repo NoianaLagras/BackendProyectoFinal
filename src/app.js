@@ -32,6 +32,7 @@ import loggerRouter from "./Routes/logger.routes.js";
 import { swaggerSetup } from "./config/swagger.js";
 import  swaggerUi  from "swagger-ui-express";
 import usersRouter from "./Routes/users.routes.js";
+import { usersService } from "./services/users.service.js";
 
 const app = express();
 const PORT = config.port
@@ -111,6 +112,9 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup) )
 //errores
 
 app.use('/loggerTest',loggerRouter)
+
+usersService.deleteInactiveUsers();
+
 app.use(errorMiddleware)
 // Iniciar el servidor
 const httpServer = app.listen(PORT, () => {

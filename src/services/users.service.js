@@ -2,7 +2,16 @@
 import { usersRepository } from "../repositories/users.repository.js";
 import customError from '../errors/errors.generator.js'
 import { errorMessage, errorName } from "../errors/errors.enum.js";
+import config from "../config/config.js";
+import { transport } from "../config/nodemailer.js";
 class UsersService {
+  async getUsers(){
+    try {
+      return await usersRepository.getUsers();
+    } catch (error) {
+      throw customError.generateError(errorMessage.USERS_NOT_FOUND, 404, errorName.USERS_NOT_FOUND);
+    }
+  }
   async findByEmail(email) {
     try {
       return await usersRepository.findByEmail(email);
@@ -39,19 +48,25 @@ throw customError.generateError(errorMessage.RESET_TOKEN_NOT_FOUND, error.code, 
  
   async saveUserDocs(id, { dni, address, bank }) {
     try {
-        const documents = [];
+      const existingDocuments = await usersRepository.getDocuments(id);
 
+      const documents = existingDocuments || [];
+
+        
         if (dni && dni.length > 0) {
-            documents.push({ name: "dni", reference: dni[0].filename });
-        }
+          const newDniDocument = { name: "dni", reference: dni[0].filename };
+          usersRepository.UpdateOrAddDocument(documents, newDniDocument);
+      }
 
-        if (address && address.length > 0) {
-            documents.push({ name: "address", reference: address[0].filename });
-        }
+      if (address && address.length > 0) {
+          const newAddressDocument = { name: "address", reference: address[0].filename };
+          usersRepository.UpdateOrAddDocument(documents, newAddressDocument);
+      }
 
-        if (bank && bank.length > 0) {
-            documents.push({ name: "bank", reference: bank[0].filename });
-        }
+      if (bank && bank.length > 0) {
+          const newBankDocument = { name: "bank", reference: bank[0].filename };
+          usersRepository.UpdateOrAddDocument(documents, newBankDocument);
+      }
 
         const savedDocuments = await usersRepository.updateOne(id, { documents });
 
@@ -60,7 +75,41 @@ throw customError.generateError(errorMessage.RESET_TOKEN_NOT_FOUND, error.code, 
         throw customError.generateError(errorMessage.DOCUMENTS_NOT_UPDATED, error.code, errorName.UPDATE_USER_ERROR);
     }
 }
+async sendNotificationEmail(email, message) {
+  
+const NODEMAILER_USER = config.nodemailer_user
+  const mailOptions = {
+    from: NODEMAILER_USER,
+    to: email,
+    subject: 'Notificación de Eliminación de Cuenta Por Inactividad',
+    text: message,
+  };
 
+  try {
+    const info = await transport.sendMail(mailOptions);
+    console.log('Correo de notificación enviado:', info.response);
+  } catch (error) {
+    console.error('Error al enviar el correo de notificación:', error);
+  }
+
+}
+
+async deleteInactiveUsers() {
+  try {
+    const thirtyMinutesAgo = new Date();
+    thirtyMinutesAgo.setMinutes(thirtyMinutesAgo.getMinutes() - 30);
+
+   const inactiveUsers = await usersRepository.findInactiveUsers(thirtyMinutesAgo);
+    
+    await usersRepository.deleteInactiveUsers(thirtyMinutesAgo);
+
+    inactiveUsers.forEach(user => {
+      this.sendNotificationEmail(user.email, 'Tu cuenta ha sido eliminada por inactividad.');
+    });
+} catch (error) {
+    throw customError.generateError(errorMessage.DELETE_INACTIVE_USERS_ERROR, error.code, errorName.DELETE_INACTIVE_USERS_ERROR);
+  }
+}
 
 
 }

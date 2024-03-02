@@ -5,6 +5,7 @@ export default class UsersManager extends BasicManager {
     constructor() {
         super(UserModel, ''); 
     }
+    
     //findById y createOne y updateOne heredados
     async findByEmail(email){
         try{
@@ -32,6 +33,51 @@ export default class UsersManager extends BasicManager {
           throw error;
         }
       }
+      async findInactiveUsers(thirtyMinutesAgo) {
+        try {
+            const response = await UserModel.find({ last_connection: { $lt: thirtyMinutesAgo } });
+            return response
+        } catch (error) {
+          console.error('Error al eliminar users:', error);
+            throw error
+        }
+        
+      }
+
+      async deleteInactiveUsers(thirtyMinutesAgo) {
+        try {
+          /* const response = await UserModel.deleteMany({ last_connection: { $lt: thirtyMinutesAgo } });
+          return response; */
+          //probar
+          const response = await UserModel.deleteMany({
+            last_connection: { $lt: thirtyMinutesAgo },
+            role: { $ne: 'Admin' }
+          });
+          return response;
+        } catch (error) {
+          throw error;
+        }
+      }
       
+      async getDocuments(id){
+        try {
+          const response = await UserModel.findById(id);
+          if (!response) {
+              throw new Error("user not found");
+          }
+          return response.documents;
+      } catch (error) {
+          throw error;
+      }
+  }
+  async UpdateOrAddDocument(documents, newDocument){
+      const existingIndex = documents.findIndex(doc => doc.name === newDocument.name);
+
+      if (existingIndex !== -1) {
+          documents[existingIndex] = newDocument;
+      } else {
+          documents.push(newDocument);
+      }
+  }
 
 }

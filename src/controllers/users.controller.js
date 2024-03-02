@@ -7,8 +7,19 @@ import { errorMessage, errorName } from '../errors/errors.enum.js';
 import { handleErrors } from '../errors/handle.Errors.js';
 import { sendPasswordResetEmail } from '../config/restorePass.js';
 import upload from '../middlewares/multer.middleware.js';
+import UserMinimalDTO from '../DTOs/usersMinimal.dto.js';
 
 class UsersController {
+  async getUsers(req, res) {
+    try {
+      const usersFound = await usersService.getUsers();
+      const users = usersFound.map(user => new UserMinimalDTO(user));
+      res.status(200).json({ users });
+    } catch (error) {
+      handleErrors(res, customError.generateError(errorMessage.USERS_NOT_FOUND, 500, errorName.USERS_NOT_FOUND));
+    }
+  }
+
   async signup(req, res, next) {
     passport.authenticate('signup', (err, user, info) => {
       if (err) {
@@ -77,11 +88,6 @@ async signout(req, res) {
 }
 
 
-
-
-
-
-
   async restore(req, res) {
     const { email } = req.body;
     try {
@@ -132,7 +138,6 @@ async signout(req, res) {
         return res.status(500).json({ error: 'Error durante el restablecimiento de la contraseña.' });
     }
 }
-
 
 
   async githubCallback(req, res) {
@@ -205,9 +210,6 @@ async signout(req, res) {
   }
 }
 
-
-
-
 async uploadDocuments(req, res) {
   const id = req.params.id;
   upload.fields([
@@ -224,14 +226,15 @@ async uploadDocuments(req, res) {
 
           const response = await usersService.saveUserDocs(id, { dni, address, bank });
 
-          res.status(200).json({ message: 'Documentos actualizados con éxito', response });
+          /* res.status(200).json({ message: 'Documentos actualizados con éxito', response }); */
+          res.status(200).json({ success: true, message: 'Documentos actualizados con éxito', response });
       } catch (error) {
-          if (!(error.code === 400 && error.message.includes('Missing documents'))) {
-              res.status(error.code || 500).json({ error: error.message });
-          } else {
-              res.status(400).json({ error: error.message });
-          }
+        if (!(error.code === 400 && error.message.includes('Missing documents'))) {
+          res.status(error.code || 500).json({ success: false, error: error.message });
+      } else {
+          res.status(400).json({ success: false, error: error.message });
       }
+  }
   });
 }
 
