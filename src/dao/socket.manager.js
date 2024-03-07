@@ -4,7 +4,20 @@ import { productRepository } from "../repositories/products.repository.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { logger } from "../config/logger.js";
 import mongoose from "mongoose";
+import { transport } from "../config/nodemailer.js";
 const { ObjectId } = mongoose.Types;
+
+// email de notificacion por eliminacion  de producto
+async function sendDeleteMail(ownerEmail,productId) {
+  const mailOptions = {
+      from: 'E-commerce', 
+      to: ownerEmail,
+      subject: 'Notificación de eliminación de producto',
+      text: `Tu producto con el ID ${productId} ha sido eliminado de la pagina web.`
+  };
+
+  await transport.sendMail(mailOptions);
+}
 class SocketManager {
   constructor(socketServer) {
     this.socketServer = socketServer;
@@ -41,6 +54,9 @@ class SocketManager {
       logger.error(`Error al agregar el producto: ${error.message}`);
     }
   }
+
+
+
   async handleDeleteProduct(data) {
     try {
       const { productId, userEmail, userRole } = data;
@@ -56,11 +72,18 @@ class SocketManager {
         return;
       }
 
-      if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
-        const result = await productRepository.deleteOne({ _id: new ObjectId(productId) });
+     /*  if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+        const result = await productRepository.deleteOne({ _id: new ObjectId(productId) }) */;
+        if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+          const result = await productRepository.deleteOne({ _id: new ObjectId(productId) });
+
+          if (userEmail !== product.ownerEmail) {
+              await sendDeleteMail(product.ownerEmail, productId);
+          }
+
   
         if (result) {
-
+          // revisar delete 
           const productosActualizados = await productRepository.findAllCustom({ limit: 100 });
           const productObject = productosActualizados.result.map(doc => doc.toObject());
           this.socketServer.emit('actualizarProductos', productObject);

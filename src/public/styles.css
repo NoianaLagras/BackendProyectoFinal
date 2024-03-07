@@ -1,9 +1,12 @@
 body {
     background-color: #f8f9fa;
 }
-
+.documentsContainer{
+background-image: url('/img/login2.jpeg');
+background-size: cover;
+}
 .profile-container {
-    max-width: 600px;
+    max-width: 700px;
     margin: 50px auto;
     padding: 30px;
     background-color: #ffffff;
@@ -16,8 +19,9 @@ body {
 }
 
 .upgrade {
-    margin-top: 450px;
-    margin-right: 5px;
+   margin: 50px ;
+    display: block;
+
 }
 
 .profile-image {
@@ -35,7 +39,7 @@ body {
 }
 
 .edit-avatar {
-    background-color: #007bff;
+    background-color: #00c224;
     color: #ffffff;
     padding: 5px 10px;
     border-radius: 5px;

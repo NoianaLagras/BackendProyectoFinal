@@ -177,12 +177,20 @@ async signout(req, res) {
       const { uid } = req.params;
       const { newRole } = req.body;
 
+      const reqUserRole = req.user;
       const user = await usersService.findById(uid);
 
       if (!user) {
           return handleErrors(res, customError.generateError(errorMessage.USER_NOT_FOUND, 404, errorName.USER_NOT_FOUND));
       }
 
+      if (reqUserRole.role === 'Admin') {
+        user.role = newRole;
+        await user.save();
+        //return res.json({ userId: uid, currentRole: user.role });
+        return res.redirect('/adminPanel')
+      }
+  
       const docs = user.documents;
       const dni = docs.find((d) => d.name === "dni");
       const bank = docs.find((d) => d.name === "bank");
@@ -226,7 +234,6 @@ async uploadDocuments(req, res) {
 
           const response = await usersService.saveUserDocs(id, { dni, address, bank });
 
-          /* res.status(200).json({ message: 'Documentos actualizados con éxito', response }); */
           res.status(200).json({ success: true, message: 'Documentos actualizados con éxito', response });
       } catch (error) {
         if (!(error.code === 400 && error.message.includes('Missing documents'))) {
@@ -252,7 +259,9 @@ console.log('id:'+ uid)
       };
       const updatedUser = await usersService.updateUserAvatar(uid, updatedUserData);
       console.log(updatedUser);
-      res.status(200).json({ message: 'Avatar actualizado con éxito', user: updatedUser });
+/*       res.status(200).json({ message: 'Avatar actualizado con éxito', user: updatedUser });
+ */
+res.status(200).json({ success: true, message: 'Avatar actualizado con éxito', updatedUser });
 
     } catch (error) {
       console.error('error' + error);
@@ -260,6 +269,15 @@ console.log('id:'+ uid)
     }
   })}; 
 
+  async deleteUserById(req, res) {
+    try {
+      const id = req.params.id
+      await usersService.deleteUserById(id);
+      res.redirect('/adminPanel'); 
+    } catch (error) {
+      res.status(error.code || 500).json({ error: error.message });
+    }
+  }
 }
 
 export const usersController = new UsersController();

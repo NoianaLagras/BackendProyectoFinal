@@ -28,9 +28,9 @@ function showAlert(message, className) {
         alertDiv.remove();
     }, 10000);
 }
-
+/* http://localhost:8080 */
 function addProductToCart(cartId, productId, quantity) {
-    fetch(`http://localhost:8080/api/carts/${cartId}/products/${productId}`, {
+    fetch(`/api/carts/${cartId}/products/${productId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

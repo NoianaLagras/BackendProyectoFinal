@@ -16,13 +16,16 @@ import { usersRepository } from "../repositories/users.repository.js";
 import { usersService } from "../services/users.service.js";
 import  { DocumentInfo ,UserInfoDTO} from "../DTOs/userInfo.dto.js";
 import EmailProductDTO from "../DTOs/emailPurchase.dto.js";
+import UserMinimalDTO from "../DTOs/usersMinimal.dto.js";
+import UserInfoForAdminDTO from "../DTOs/usersForAdmin.dto.js";
 
+const adminMiddleware=['Admin']
 const adminPremiumMiddleware=['Admin', 'Premium']
 const userAuthMiddleware = ['Admin', 'User','Premium']
 
 const viewsRouter = Router();
 
-viewsRouter.get('/', async (req, res) => {
+/* viewsRouter.get('/', async (req, res) => {
   try {
     const limit = 12;
 
@@ -43,8 +46,27 @@ viewsRouter.get('/', async (req, res) => {
     logger.error(`Error: ${error}`)
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
-});
+}); */
+viewsRouter.get('/', async (req, res) => {
+  try {
+    const limit = 12;
 
+    const { result } = await productRepository.findAllCustom({
+      limit: limit,
+    });
+
+    const productObject = result.map(doc => doc.toObject());
+    
+    res.render('home', {
+      productList: productObject,
+      user: req.user, 
+    });
+
+  } catch (error) {
+    logger.error(`Error: ${error}`)
+    res.status(500).json({ error: 'Error al cargar la vista.' });
+  }
+});
 
 viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMiddleware), async (req, res) => {
   try {
@@ -72,15 +94,12 @@ viewsRouter.get('/realtimeproducts', jwtValidator, authMiddleware(adminPremiumMi
       productList: productObject,
       userEmail: user.email,
       userRole: userRole,
+      user: req.user, 
      });
   } catch (error) {
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
 });
-
-
-
-
 
 
 viewsRouter.get('/api/users/premium/:uid', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
@@ -89,7 +108,7 @@ viewsRouter.get('/api/users/premium/:uid', jwtValidator, authMiddleware(userAuth
     const user = await usersRepository.findById(userId);
     const currentRole = user ? user.role : null;
 
-    res.render('roleChange', { userId, currentRole });
+    res.render('roleChange', { userId, currentRole ,user: req.user, });
   } catch (error) {
     console.error(error);
 
@@ -115,14 +134,14 @@ viewsRouter.get('/usersInfo/:uid', jwtValidator, authMiddleware(userAuthMiddlewa
 
   const isUrl = user.avatar.startsWith("http");
 
-  res.render('documents', { user, isUrl, userInfoDTO  });
+  res.render('documents', { user, isUrl, userInfoDTO ,user: req.user,  });
 });
 
 viewsRouter.get('/chat',jwtValidator,authMiddleware(userAuthMiddleware), async (req, res) => {
   try {
     const {email:userEmail}= req.user
     const messages = await messageRepository.getAllMessages();
-    res.render('chat', { messages , userEmail });
+    res.render('chat', { messages , userEmail ,user: req.user, });
   } catch (error) {
     console,log(error)
     res.redirect('/login')}
@@ -164,23 +183,14 @@ viewsRouter.get('/api/product/:pid', jwtValidator,authMiddleware(userAuthMiddlew
           return res.status(404).json({ error: 'Producto no encontrado.' });
       }
 
-      res.render('productView', { product, cartId });
+      res.render('productView', { product, cartId,user: req.user });
   } catch (error) {
     res.redirect('/login')
       }
 });
 
 
-viewsRouter.get('/api/cart/:cid', async (req, res) => {
-  try {
-    const idCart = req.params.cid;
-    const {cart , total} = await cartsRepository.findCartById(idCart); 
-    res.render('cart', { cart ,total ,idCart});
-   } catch (error) {
 
-    res.status(500).send('Error al renderizar la página de carrito');
-  }
-});
 
 // viewsRouter
 viewsRouter.get('/signup', async (req, res) => {
@@ -211,7 +221,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
 
       res.render('purchased', {
         message: response.message,
-        availableProducts: emailProducts,
+        availableProducts: response.availableProducts,
         total: response.total,
         unavailableProducts: response.unavailableProducts,
       });
@@ -230,7 +240,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
       `;
 
       const mailOptions = {
-        from: 'Noi Lagras',
+        from: 'E-commerce',
         to: userEmail,
         subject: 'Compra en Ecommerce - CoderBackend',
         text: emailBody,
@@ -243,6 +253,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
       res.render('purchaseFailed', {
         message: response.message,
         unavailableProducts: response.unavailableProducts,
+        user: req.user, 
       });
     }
 
@@ -251,7 +262,16 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     res.redirect('/login');
   }
 });
+viewsRouter.get('/api/cart/:cid', async (req, res) => {
+  try {
+    const idCart = req.params.cid;
+    const {cart , total} = await cartsRepository.findCartById(idCart); 
+    res.render('cart', { cart ,total ,idCart});
+   } catch (error) {
 
+    res.status(500).send('Error al renderizar la página de carrito');
+  }
+});
 
 //restaurar
 
@@ -307,5 +327,23 @@ viewsRouter.get('/error', async (req, res) => {
     
   });}) 
 
+viewsRouter.get('/adminPanel', jwtValidator, authMiddleware(adminMiddleware), async (req,res)=>{
+  try {
+    const usersFound = await usersService.getUsers();
 
+
+
+    
+    const users = usersFound.map(user => new UserInfoForAdminDTO(user));
+
+    res.render('adminPanel', { users ,user: req.user,  });
+  
+  } catch (error) {
+    logger.error(`Error: ${error}`)
+    res.status(500).json({ error: 'Error al cargar la vista.' });
+  }
+//Crear una vista para poder visualizar, modificar el rol y eliminar un usuario. Esta vista únicamente será
+//accesible para el administrador del ecommerce
+})
 export default viewsRouter;
+//ordenar 

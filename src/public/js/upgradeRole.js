@@ -23,12 +23,12 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
     const formData = new FormData(event.target);
     const selectedRole = formData.get('newRole');
     const userId = formData.get('userId');
-
+    /* http://localhost:8080 */
     try {
-        const response = await fetch(`http://localhost:8080/api/users/premium/${userId}/update`, {
+        const response = await fetch(`/api/users/premium/${userId}/update`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/x-www-form-urlencoded' ,
             },
             body: `newRole=${selectedRole}&userId=${userId}`,
         });
@@ -40,7 +40,8 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
                     const result = await response.json();
                     console.log('Respuesta JSON:', result);
 
-                    showAlert('Rol cambiado correctamente, sera redireccionado al login para actualizar su información', 'alert-success', 'http://localhost:8080/login');
+                    showAlert('Rol cambiado correctamente, sera redireccionado al login para actualizar su información', 'alert-success', '/login');
+                    /* http://localhost:8080 */
                 } else {
                     console.error('La respuesta no es JSON válido ni HTML. Tipo de contenido inesperado:', contentType);
                 }

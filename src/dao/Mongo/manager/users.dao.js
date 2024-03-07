@@ -33,9 +33,9 @@ export default class UsersManager extends BasicManager {
           throw error;
         }
       }
-      async findInactiveUsers(thirtyMinutesAgo) {
+      async findInactiveUsers(twoDaysAgo) {
         try {
-            const response = await UserModel.find({ last_connection: { $lt: thirtyMinutesAgo } });
+            const response = await UserModel.find({ last_connection: { $lt: twoDaysAgo } });
             return response
         } catch (error) {
           console.error('Error al eliminar users:', error);
@@ -44,13 +44,11 @@ export default class UsersManager extends BasicManager {
         
       }
 
-      async deleteInactiveUsers(thirtyMinutesAgo) {
+      async deleteInactiveUsers(twoDaysAgo) {
         try {
-          /* const response = await UserModel.deleteMany({ last_connection: { $lt: thirtyMinutesAgo } });
-          return response; */
-          //probar
+
           const response = await UserModel.deleteMany({
-            last_connection: { $lt: thirtyMinutesAgo },
+            last_connection: { $lt: twoDaysAgo },
             role: { $ne: 'Admin' }
           });
           return response;

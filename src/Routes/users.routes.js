@@ -6,7 +6,7 @@ import { Router } from 'express';
 const usersRouter = Router()
 ;
 const userAuthMiddleware = ['Admin', 'User','Premium']
-// users premium ? 
+
 usersRouter.get('/', usersController.getUsers);
 
 usersRouter.post('/premium/:uid/update', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
@@ -27,5 +27,8 @@ usersRouter.post('/:uid/updateAvatar',
    async (req, res) => {
   usersController.updateAvatar(req, res);
 });
+
+usersRouter.post('/:id/delete',usersController.deleteUserById)
+// delete users por inactividad llamado en app.js
 
   export default usersRouter;

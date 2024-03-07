@@ -1,10 +1,10 @@
 import {transport} from './nodemailer.js';
-
+/* http://localhost:8080 */
 export function sendPasswordResetEmail(email, resetToken) {
-  const resetLink = `http://localhost:8080/restorePassword/${resetToken}`;
+  const resetLink = `/restorePassword/${resetToken}`;
   
   const mailOptions = {
-    from: 'Noi Lagras',
+    from: 'E-commerce',
     to: email,
     subject: 'Restablecer contraseña',
     html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${resetLink}">${resetLink}</a></p>`,

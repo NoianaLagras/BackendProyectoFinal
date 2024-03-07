@@ -59,17 +59,17 @@ logger.error(`Error encontrar al token ${error}`);
     }
   }
 
-  async findInactiveUsers(thirtyMinutesAgo){
+  async findInactiveUsers(twoDaysAgo){
     try {
-      return await this.dao.findInactiveUsers(thirtyMinutesAgo);
+      return await this.dao.findInactiveUsers(twoDaysAgo);
     } catch (error) {
       
       logger.error(`Error al encontrar users inactivos  ${error}`);
     }
   }
-  async deleteInactiveUsers(thirtyMinutesAgo){
+  async deleteInactiveUsers(twoDaysAgo){
     try {
-      return await this.dao.deleteInactiveUsers(thirtyMinutesAgo);
+      return await this.dao.deleteInactiveUsers(twoDaysAgo);
     } catch (error) {
       logger.error(`Error al eliminar users  ${error}`);
     }
@@ -86,6 +86,14 @@ logger.error(`Error encontrar al token ${error}`);
       return await this.dao.UpdateOrAddDocument(documents, newDocument);
     } catch (error) {
       logger.error(`Error al actualizar o agregar docs${error}`);
+    }
+  }
+  async deleteOne(id) {
+    try {
+      await this.dao.deleteOne(id);
+      return true;
+    } catch (error) {
+      throw error;
     }
   }
 }

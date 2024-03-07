@@ -77,9 +77,10 @@ throw customError.generateError(errorMessage.RESET_TOKEN_NOT_FOUND, error.code, 
 }
 async sendNotificationEmail(email, message) {
   
-const NODEMAILER_USER = config.nodemailer_user
+//const NODEMAILER_USER = config.nodemailer_user
   const mailOptions = {
-    from: NODEMAILER_USER,
+    //from: NODEMAILER_USER,
+    from: 'E-commerce',
     to: email,
     subject: 'Notificación de Eliminación de Cuenta Por Inactividad',
     text: message,
@@ -94,7 +95,7 @@ const NODEMAILER_USER = config.nodemailer_user
 
 }
 
-async deleteInactiveUsers() {
+/* async deleteInactiveUsers() {
   try {
     const thirtyMinutesAgo = new Date();
     thirtyMinutesAgo.setMinutes(thirtyMinutesAgo.getMinutes() - 30);
@@ -109,9 +110,35 @@ async deleteInactiveUsers() {
 } catch (error) {
     throw customError.generateError(errorMessage.DELETE_INACTIVE_USERS_ERROR, error.code, errorName.DELETE_INACTIVE_USERS_ERROR);
   }
+} */
+
+// role
+async deleteInactiveUsers() {
+  try {
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+    const inactiveUsers = await usersRepository.findInactiveUsers(twoDaysAgo);
+
+    await usersRepository.deleteInactiveUsers(twoDaysAgo);
+
+    inactiveUsers.forEach(user => {
+      if (user.role !== 'Admin') {
+        this.sendNotificationEmail(user.email, 'Tu cuenta ha sido eliminada por inactividad.');
+      }
+    });
+  } catch (error) {
+    throw customError.generateError(errorMessage.DELETE_INACTIVE_USERS_ERROR, error.code, errorName.DELETE_INACTIVE_USERS_ERROR);
+  }
 }
-
-
+async deleteUserById(id) {
+  try {
+    await usersRepository.deleteOne(id);
+    return true; 
+  } catch (error) {
+    throw customError.generateError(errorMessage.USERS_NOT_FOUND, error.code, errorName.USERS_NOT_FOUND);
+  }
+}
 }
 
 
