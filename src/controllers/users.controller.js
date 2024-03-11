@@ -23,10 +23,10 @@ class UsersController {
   async signup(req, res, next) {
     passport.authenticate('signup', (err, user, info) => {
       if (err) {
-        handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
+        return handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
       }
       if (!user) {
-        handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
+        return handleErrors(res, customError.generateError(errorMessage.SIGNUP_ERROR, 500, errorName.SIGNUP_ERROR));
       }
       res.redirect('/login');
     })(req, res, next);
@@ -259,8 +259,7 @@ console.log('id:'+ uid)
       };
       const updatedUser = await usersService.updateUserAvatar(uid, updatedUserData);
       console.log(updatedUser);
-/*       res.status(200).json({ message: 'Avatar actualizado con éxito', user: updatedUser });
- */
+
 res.status(200).json({ success: true, message: 'Avatar actualizado con éxito', updatedUser });
 
     } catch (error) {

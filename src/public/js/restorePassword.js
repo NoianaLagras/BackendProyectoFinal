@@ -24,7 +24,7 @@ document.getElementById('restorePasswordForm').addEventListener('submit', async 
         showAlert('Las contraseñas no coinciden.', 'alert-danger');
         return;
     }
-/* http://localhost:8080 */
+
     try {
         const response = await fetch(`/api/sessions/restorePassword/${token}`, {
             method: 'POST',

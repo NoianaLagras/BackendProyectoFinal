@@ -23,7 +23,6 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
     const formData = new FormData(event.target);
     const selectedRole = formData.get('newRole');
     const userId = formData.get('userId');
-    /* http://localhost:8080 */
     try {
         const response = await fetch(`/api/users/premium/${userId}/update`, {
             method: 'POST',

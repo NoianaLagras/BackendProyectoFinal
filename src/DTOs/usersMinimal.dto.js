@@ -3,6 +3,5 @@ export default class UserMinimalDTO {
       this.name = user.name|| user.Usuario,
       this.email = user.email;
       this.role = user.role;
-      //this._id = user._id;
     }
   }

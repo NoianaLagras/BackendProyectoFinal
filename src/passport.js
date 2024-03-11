@@ -21,6 +21,11 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true, usernameFiel
     }
 
     try {
+      const existingUser = await usersRepository.findOne({ email });
+
+      if (existingUser) {
+        return done(null, false, { message: 'Email ya registrado' });
+      }
       const hashedPassword = await hashData(password);
       const newCart = await cartsRepository.createCart();
 

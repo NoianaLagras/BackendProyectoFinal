@@ -25,7 +25,7 @@ export const errorName = {
   CREATE_PRODUCT_ERROR: 'Create Product Error',
   UPDATE_PRODUCT_ERROR: 'Update Product Error',
   DELETE_PRODUCT_ERROR: 'Delete Product Error',
-  SIGNUP_ERROR: 'Signup Error',
+  SIGNUP_ERROR: 'Signup Error , Email Already registered',
   LOGIN_ERROR: 'Login Error',
   SIGNOUT_ERROR: 'Signout Error',
   RESTORE_PASSWORD_ERROR: 'Restore Password Error',

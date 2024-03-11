@@ -25,28 +25,7 @@ const userAuthMiddleware = ['Admin', 'User','Premium']
 
 const viewsRouter = Router();
 
-/* viewsRouter.get('/', async (req, res) => {
-  try {
-    const limit = 12;
 
-    const { result } = await productRepository.findAllCustom({
-      limit: limit,
-    });
-
-    const productObject = result.map(doc => doc.toObject());
-    
-   
-
-    res.render('home', {
-      productList: productObject,
-
-    });
-
-  } catch (error) {
-    logger.error(`Error: ${error}`)
-    res.status(500).json({ error: 'Error al cargar la vista.' });
-  }
-}); */
 viewsRouter.get('/', async (req, res) => {
   try {
     const limit = 12;
@@ -192,7 +171,7 @@ viewsRouter.get('/api/product/:pid', jwtValidator,authMiddleware(userAuthMiddlew
 
 
 
-// viewsRouter
+
 viewsRouter.get('/signup', async (req, res) => {
 if (req.authenticated) {
       return res.redirect('/api/products');
@@ -262,6 +241,7 @@ viewsRouter.get("/:idCart/purchase", jwtValidator, async (req, res) => {
     res.redirect('/login');
   }
 });
+
 viewsRouter.get('/api/cart/:cid', async (req, res) => {
   try {
     const idCart = req.params.cid;
@@ -308,13 +288,6 @@ viewsRouter.get('/error', async (req, res) => {
 });
 
 
- /* json mocking
- viewsRouter.get('/mockingproducts', async (req, res) => {
-  const products = [];
-  for (let i = 0; i < 100; i++) {
-    products.push(generateProduct());
-  }
-  res.json(products)})*/
 
  // Renderizado  de productos mocking:
  viewsRouter.get('/mockingproducts', async (req, res) => {
@@ -331,9 +304,6 @@ viewsRouter.get('/adminPanel', jwtValidator, authMiddleware(adminMiddleware), as
   try {
     const usersFound = await usersService.getUsers();
 
-
-
-    
     const users = usersFound.map(user => new UserInfoForAdminDTO(user));
 
     res.render('adminPanel', { users ,user: req.user,  });
@@ -342,8 +312,6 @@ viewsRouter.get('/adminPanel', jwtValidator, authMiddleware(adminMiddleware), as
     logger.error(`Error: ${error}`)
     res.status(500).json({ error: 'Error al cargar la vista.' });
   }
-//Crear una vista para poder visualizar, modificar el rol y eliminar un usuario. Esta vista únicamente será
-//accesible para el administrador del ecommerce
+
 })
 export default viewsRouter;
-//ordenar 

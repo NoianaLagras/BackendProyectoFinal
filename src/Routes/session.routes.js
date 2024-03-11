@@ -24,8 +24,5 @@ sessionRouter.get('/current', passport.authenticate('jwt', { session: false }), 
 //Signout
 sessionRouter.get('/signout', passport.authenticate('jwt', { session: false }), (req, res) => usersController.signout(req, res));
 
-/* sessionRouter.post('/users/premium/:uid/update', jwtValidator, authMiddleware(userAuthMiddleware), async (req, res) => {
-    usersController.updatePremiumUser(req, res);
-  })
- */
+
 export default sessionRouter;

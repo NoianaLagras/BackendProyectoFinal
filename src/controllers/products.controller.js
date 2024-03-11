@@ -48,42 +48,7 @@ class ProductController {
     }
   }
  
-/* async createProductMulter(req, res) {
-    try {
-      const thumbnails = req.file;
-  
-      const productData = {
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        category: req.body.category,
-        code: req.body.code,
-        stock: req.body.stock,
-        status: true,
-        thumbnails: thumbnails,
-        owner: req.body.userRole || 'Premium',
-        ownerEmail: req.body.userEmail || null,
-      };
-  
-      upload.single('thumbnails')(req, res, async (err) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-  
-        try {
-          const createdProduct = await productService.createProduct(productData);
-          res.status(200).json({ message: 'Producto agregado correctamente', product: createdProduct });
-        } catch (error) {
-          console.error('Error in createProduct controller:', error);
-          handleErrors(res, customError.generateError(errorMessage.CREATE_PRODUCT_ERROR, 400, errorName.CREATE_PRODUCT_ERROR));
-        }
-      });
-    } catch (error) {
-      console.error('Error in createProduct controller:', error);
-      handleErrors(res, customError.generateError(errorMessage.CREATE_PRODUCT_ERROR, 400, errorName.CREATE_PRODUCT_ERROR));
-    }
-  } */
- 
+
 async createProductMulter(req, res)  {
     try {
       const thumbnails = req.file;

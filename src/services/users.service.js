@@ -77,9 +77,8 @@ throw customError.generateError(errorMessage.RESET_TOKEN_NOT_FOUND, error.code, 
 }
 async sendNotificationEmail(email, message) {
   
-//const NODEMAILER_USER = config.nodemailer_user
+
   const mailOptions = {
-    //from: NODEMAILER_USER,
     from: 'E-commerce',
     to: email,
     subject: 'Notificación de Eliminación de Cuenta Por Inactividad',
