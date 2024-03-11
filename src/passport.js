@@ -75,7 +75,9 @@ passport.use('github', new GithubStrategy({
     clientID: config.git_client_id,
     clientSecret: config.git_client_secret,
     /* http://localhost:8080 */
-    callbackURL: "/api/sessions/callback",
+    /* callbackURL: "/api/sessions/callback", */
+    callbackURL: "https://backendproyectofinal-production-1e07.up.railway.app/api/sessions/callback",
+
 },async(accessToken,refreshToken,profile,done)=>{
     try {
 
