@@ -74,7 +74,8 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email
 passport.use('github', new GithubStrategy({
     clientID: config.git_client_id,
     clientSecret: config.git_client_secret,
-     callbackURL: config.git_callback_url || "/api/sessions/callback",
+     callbackURL:'https://backendproyectofinal-production-1e07.up.railway.app/api/sessions/callback'
+      /* config.git_callback_url || "/api/sessions/callback" */,
    
 },async(accessToken,refreshToken,profile,done)=>{
     try {
