@@ -1,4 +1,4 @@
-import { logger } from "../config/logger.js";
+/* import { logger } from "../config/logger.js";
 export const errorMiddleware = (error, req, res, next) => {
     logger.error(error);
   
@@ -6,4 +6,4 @@ export const errorMiddleware = (error, req, res, next) => {
       .status(error.code || 500)
       .json({ message: error.message, name: error.name });
   };
-  
+   */
