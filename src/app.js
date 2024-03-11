@@ -26,7 +26,7 @@ import "./dao/Mongo/configDB.js"
 //socket
 import { socketManager } from "./dao/socket.manager.js";
 import config from './config/config.js'
-/* import { errorMiddleware } from "./middlewares/error.middleware.js"; */
+import { errorMiddleware } from "./middlewares/error.middleware.js";
 import { logger } from "./config/logger.js";
 import loggerRouter from "./Routes/logger.routes.js";
 import { swaggerSetup } from "./config/swagger.js";
@@ -114,8 +114,8 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup) )
 app.use('/loggerTest',loggerRouter)
 
 usersService.deleteInactiveUsers();
-/* 
-app.use(errorMiddleware) */
+
+app.use(errorMiddleware)
 // Iniciar el servidor
 const httpServer = app.listen(PORT, () => {
   logger.info(`Escuchando en el puerto ${PORT}`);
