@@ -28,7 +28,7 @@ function showAlert(message, className) {
         alertDiv.remove();
     }, 10000);
 }
-/* http://localhost:8080 */
+
 function addProductToCart(cartId, productId, quantity) {
     fetch(`/api/carts/${cartId}/products/${productId}`, {
         method: 'POST',
@@ -41,7 +41,7 @@ function addProductToCart(cartId, productId, quantity) {
         if (response.ok) {
             showAlert('Producto agregado al carrito exitosamente.','alert-success');
         } else if (response.status === 403) {
-            showAlert('No tienes permisos para esta acción.', 'alert-warning');
+            showAlert('Eres el dueño de este producto. No tienes permisos para esta acción.', 'alert-warning');
         } else if (response.status === 400) {
             showAlert('Error: La cantidad excede el stock disponible.', 'alert-danger');
         } else {
