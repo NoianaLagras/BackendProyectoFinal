@@ -1,5 +1,3 @@
-//import { productRepository } from "./Mongo/manager/products.dao.js";
-//import { messageManagers } from "./Mongo/manager/message.dao.js";
 import { productRepository } from "../repositories/products.repository.js";
 import { messageRepository } from "../repositories/message.repository.js";
 import { logger } from "../config/logger.js";
@@ -72,9 +70,7 @@ class SocketManager {
         return;
       }
 
-     /*  if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
-        const result = await productRepository.deleteOne({ _id: new ObjectId(productId) }) */;
-        if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
+     if (userRole === 'Admin' || (userRole === 'Premium' && userEmail === product.ownerEmail)) {
           const result = await productRepository.deleteOne({ _id: new ObjectId(productId) });
 
           if (userEmail !== product.ownerEmail) {
@@ -83,7 +79,7 @@ class SocketManager {
 
   
         if (result) {
-          // revisar delete 
+          
           const productosActualizados = await productRepository.findAllCustom({ limit: 100 });
           const productObject = productosActualizados.result.map(doc => doc.toObject());
           this.socketServer.emit('actualizarProductos', productObject);

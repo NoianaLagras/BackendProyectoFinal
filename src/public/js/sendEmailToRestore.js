@@ -17,7 +17,7 @@ document.getElementById('restoreForm').addEventListener('submit', function (even
     event.preventDefault();
 
     const email = document.getElementById('email').value;
-/*http://localhost:8080  */
+
     fetch('/api/sessions/restore', {
         method: 'POST',
         headers: {

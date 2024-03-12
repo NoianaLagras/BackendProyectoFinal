@@ -40,7 +40,7 @@ document.getElementById('role-form').addEventListener('submit', async (event) =>
                     console.log('Respuesta JSON:', result);
 
                     showAlert('Rol cambiado correctamente, sera redireccionado al login para actualizar su información', 'alert-success', '/login');
-                    /* http://localhost:8080 */
+                    
                 } else {
                     console.error('La respuesta no es JSON válido ni HTML. Tipo de contenido inesperado:', contentType);
                 }

@@ -1,5 +1,6 @@
 import {transport} from './nodemailer.js';
-/* http://localhost:8080 */
+
+
 export function sendPasswordResetEmail(email, resetToken) {
   const resetLink = `/restorePassword/${resetToken}`;
   

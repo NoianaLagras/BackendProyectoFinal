@@ -45,7 +45,7 @@ class ProductService {
       throw customError.generateError(errorMessage.PRODUCT_NOT_FOUND, error.code, errorName.PRODUCT_NOT_FOUND);
     }
   }
-  //agregar verificacion de type of thumbnails
+  
 }
 
 export const productService = new ProductService();

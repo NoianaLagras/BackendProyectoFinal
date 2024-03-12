@@ -11,16 +11,10 @@
 
 <div class="container profile-container">
     <div class="profile-image-container">
-        {{!-- {{#if message}}
-  <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
-    {{message}}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-{{/if}} --}}
+
 
         <div class="profile-image">
-           {{!--  <img src="{{user.avatar}}" alt="Profile Image" id="profileImage"> --}}
-            {{#if isUrl}}
+           {{#if isUrl}}
                 <img src="{{user.avatar}}" alt="Avatar" id="profileImage" />
             {{else}}
              <img src="/docs/profile/{{user.avatar}}" alt="Avatar" id="profileImage"  />

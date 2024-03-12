@@ -94,24 +94,9 @@ async sendNotificationEmail(email, message) {
 
 }
 
-/* async deleteInactiveUsers() {
-  try {
-    const thirtyMinutesAgo = new Date();
-    thirtyMinutesAgo.setMinutes(thirtyMinutesAgo.getMinutes() - 30);
 
-   const inactiveUsers = await usersRepository.findInactiveUsers(thirtyMinutesAgo);
-    
-    await usersRepository.deleteInactiveUsers(thirtyMinutesAgo);
 
-    inactiveUsers.forEach(user => {
-      this.sendNotificationEmail(user.email, 'Tu cuenta ha sido eliminada por inactividad.');
-    });
-} catch (error) {
-    throw customError.generateError(errorMessage.DELETE_INACTIVE_USERS_ERROR, error.code, errorName.DELETE_INACTIVE_USERS_ERROR);
-  }
-} */
-
-// role
+// Eliminar usuarios activos
 async deleteInactiveUsers() {
   try {
     const twoDaysAgo = new Date();
