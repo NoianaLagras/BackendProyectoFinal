@@ -20,7 +20,7 @@ async function submitForm() {
         alert('error en solicitud'+error)
     }
 } */
-const socketClient = io();
+
 document.addEventListener('DOMContentLoaded', () => {
     const multerSubmitBtn = document.getElementById('multerSubmitBtn');
     const productForm = document.getElementById('productForm');

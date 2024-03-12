@@ -35,77 +35,19 @@
 
   <!-- formulario para agregar productos -->
 
-{{!--   <form id="formularioAgregarProducto">
-       <input type="hidden" id="userEmail" value="{{userEmail}}">
-       <input type="hidden" id="userRole" value="{{userRole}}">
-    <input type="text" id="title" placeholder="Título" required>
-    <input type="text" id="description" placeholder="Descripción" required>
-    <input type="number" id="price" placeholder="Precio"  required>
-    <input type="text" id="category" placeholder="Categoría" required>
-    <input type="text" id="code" placeholder="Código" required>
-    <input type="number" id="stock" placeholder="Stock" required>
-         <input type="text" id="thumbnails" placeholder="URL de la imagen">
-    <button type="submit">Agregar Producto</button>
-  </form>
-<form id="productForm" enctype="multipart/form-data" class="container mt-5  mb-4 p-4 shadow-lg">
-
-        <h4 class="multerTitle">Agregar producto por Multer:</h4>
-   
-    <div class="mb-3">
-        <label for="title" class="form-label">Título:</label>
-        <input type="text" id="title" name="title" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="description" class="form-label">Descripción:</label>
-        <textarea id="description" name="description" class="form-control" required></textarea>
-    </div>
-
-    <div class="mb-3">
-        <label for="price" class="form-label">Precio:</label>
-        <input type="number" id="price" name="price" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="category" class="form-label">Categoría:</label>
-        <input type="text" id="category" name="category" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="code" class="form-label">Código:</label>
-        <input type="text" id="code" name="code" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="stock" class="form-label">Stock:</label>
-        <input type="number" id="stock" name="stock" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="thumbnails" class="form-label">Seleccionar Imagen:</label>
-        <input type="file" id="thumbnails" name="thumbnails" class="form-control" accept="image/*" required>
-    </div>
-
-    <input type="hidden" id="userEmail" name="userEmail" value="{{userEmail}}">
-    <input type="hidden" id="userRole" name="userRole" value="{{userRole}}">
-
-
-<button type="button" id="socketSubmitBtn" class="btn btn-primary">Crear Producto (multer)</button>
-
-</form> --}}
 <div class="container mt-5">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" id="multerTab" data-toggle="tab"  href="#multerForm" >Multer Form</a>
+            <a class="nav-link active" id="multerTab" data-toggle="tab"  href="#multerForm" >Multer Form</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" id="urlTab" data-toggle="tab" href="#urlForm">URL Form</a>
+            <a class="nav-link" id="urlTab" data-toggle="tab" href="#urlForm">URL Form</a>
         </li>
     </ul>
 
     <div class="tab-content mt-2">
         <!-- Multer Form -->
-        <div class="tab-pane fade" id="multerForm">
+        <div class="tab-pane fade show active" id="multerForm">
             <form id="productForm" enctype="multipart/form-data" class="container mt-5  mb-4 p-4 shadow-lg">
 
         <h4 class="multerTitle">Agregar producto por Multer:</h4>
@@ -155,7 +97,7 @@
         </div>
 
         <!-- URL Form -->
-        <div class="tab-pane fade show active" id="urlForm">
+        <div class="tab-pane fade" id="urlForm">
             <form id="formularioAgregarProducto">
        <input type="hidden" id="userEmailAdd" value="{{userEmail}}">
        <input type="hidden" id="userRoleAdd" value="{{userRole}}">
