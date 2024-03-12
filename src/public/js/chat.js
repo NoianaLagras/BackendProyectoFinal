@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       messageInput.value = '';
     });
 
-    // Alctualizar
+
     socketClient.on('actualizarMensajes', (messages) => {
 
         const chat = document.getElementById('chat');
