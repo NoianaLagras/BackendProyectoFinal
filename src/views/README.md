@@ -6,7 +6,7 @@ Este proyecto es el resultado del trabajo final en el curso de desarrollo backen
 
 El proyecto ha sido desplegado en el siguiente enlace: [https://backendproyectofinal-production-1e07.up.railway.app/](https://backendproyectofinal-production-1e07.up.railway.app/)
 
-**Nota:** Aunque el proyecto está disponible en línea, hay ciertas funcionalidades que pueden verse afectadas en comparación con el entorno local. Por ejemplo, la función de subir avatares o documentos al perfil puede no funcionar correctamente debido a las limitaciones de Multer en el entorno de producción.
+**Nota:** Aunque el proyecto está disponible en línea, hay ciertas funcionalidades que pueden verse afectadas en comparación con el entorno local. Por ejemplo, la función de subir avatares puede no funcionar correctamente debido a las limitaciones de Multer en el entorno de producción.
 
 
 ### Descripción del Proyecto
