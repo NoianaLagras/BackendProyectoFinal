@@ -16,7 +16,7 @@ export const compareData = async (data , hashedData)=>{
 const SECRET_KET_JWT = config.secret_jwt
 
 export const generateToken = (user)=>{
-    const token = jwt.sign(user,SECRET_KET_JWT,{ expiresIn:3600});
+    const token = jwt.sign(user,SECRET_KET_JWT,{ expiresIn:'1h' });
     logger.debug(`Token: ${token}`);
     return token ;
 }
