@@ -72,9 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
     productList.forEach((product) => {
       const card = document.createElement('div');
       card.classList.add('cards');
+      
+      let imageTags = '';
 
-      card.innerHTML = `
-        <img src="${product.thumbnails}" alt="Imagen del producto" class="productImage">
+    if (Array.isArray(product.thumbnails)) {
+      product.thumbnails.forEach((thumbnail) => {
+        if (thumbnail.filename) {
+          const localImageUrl = `/docs/products/${thumbnail.filename}`;
+          imageTags += `<img src="${localImageUrl}" alt="Imagen del producto" class="productImage">`;
+        }else {
+          imageTags += `<img src="${product.thumbnails}" alt="Imagen del producto" class="productImage">`;
+        }
+      });
+    }
+
+    card.innerHTML = `
+      ${imageTags}
         <h3 class="cardTitle">${product.title}</h3>
         <h4 class="cardPrice">$${product.price}</h4>
         <h4 class="cardStock">Stock: ${product.stock}</h4>
